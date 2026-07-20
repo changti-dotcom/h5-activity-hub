@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>傳說對決 H5 活動發想小幫手</title>
+<?!= include('Shared'); ?>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="brand"><span class="dot">●</span> 傳說對決 H5 活動中心</div>
+    <div class="nav-links">
+      <a href="<?= baseUrl ?>" class="active">首頁</a>
+      <a href="<?= baseUrl ?>?page=generate">我要找活動</a>
+      <a href="<?= baseUrl ?>?page=activities">過往歷史活動</a>
+      <a href="<?= baseUrl ?>?page=ideas">我有活動靈感</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>急需活動點子？先讓 AI 幫你想一輪</h1>
+    <p>這是幫傳說對決營運團隊快速發想 H5 小遊戲活動的小幫手。手上有活動要交但還沒靈感？先用「我要找活動」讓 AI 幫你抓幾個方向；也可以翻翻過往歷史活動，或看看同事丟的活動靈感，說不定馬上就有解。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="<?= baseUrl ?>?page=generate">✨ 我要找活動</a>
+      <a class="btn btn-ghost" href="<?= baseUrl ?>?page=activities">過往歷史活動</a>
+      <a class="btn btn-ghost" href="<?= baseUrl ?>?page=ideas">我有活動靈感</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card"><div class="num">–</div><div class="label">歷史活動筆數</div></div>
+    <div class="stat-card"><div class="num">–</div><div class="label">活動靈感點子數</div></div>
+    <div class="stat-card"><div class="num">–</div><div class="label">遊戲類型分類</div></div>
+    <div class="stat-card"><div class="num">–</div><div class="label">成效數據待補齊</div></div>
+  </div>
+
+  <div class="section-grid">
+    <a class="entry-card" href="<?= baseUrl ?>?page=generate">
+      <h3>✨ 我要找活動</h3>
+      <p>選好設計目的、特殊需求，補上想切中的時事或客製化條件，讓 AI 依團隊過去的活動風格生成新主題建議，看順眼還能一鍵存成活動靈感。</p>
+      <span class="go">前往使用 →</span>
+    </a>
+    <a class="entry-card" href="<?= baseUrl ?>?page=activities">
+      <h3>📚 過往歷史活動</h3>
+      <p>過往 H5 小遊戲活動的機制、設計目的、特殊需求與成效紀錄。可依「目的」「特殊需求」「遊戲類型」篩選，設計新活動前先參考類似案例。</p>
+      <span class="go">前往瀏覽 →</span>
+    </a>
+    <a class="entry-card" href="<?= baseUrl ?>?page=ideas">
+      <h3>💡 我有活動靈感</h3>
+      <p>同事自由上傳的 H5 小遊戲點子，瀏覽時可看到是誰提供的想法。歡迎把靈光一閃的點子丟進來，說不定就是下一檔活動！</p>
+      <span class="go">前往瀏覽 →</span>
+    </a>
+  </div>
+
+  <div class="form-banner">
+    這是<strong>正式共用版本</strong>：資料會直接讀寫團隊共用的 Google Sheet，僅限已登入 Garena Google 帳號的同事使用。
+  </div>
+</main>
+
+<footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
+
+<script>
+  (async function () {
+    try {
+      const [activities, ideas] = await Promise.all([fetchActivities(), fetchIdeas()]);
+      const mechanismSet = new Set();
+      let missingMetrics = 0;
+      activities.forEach((a) => {
+        (a.mechanismTags || []).forEach((t) => mechanismSet.add(t));
+        if (!a.metrics) missingMetrics += 1;
+      });
+      const nums = document.querySelectorAll('#statsRow .num');
+      nums[0].textContent = activities.length;
+      nums[1].textContent = ideas.length;
+      nums[2].textContent = mechanismSet.size;
+      nums[3].textContent = missingMetrics;
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+</script>
+</body>
+</html>

@@ -15,11 +15,55 @@ const IDEAS_HEADERS = [
   'inspirationRef', 'createdAt',
 ];
 
+// 頁面名稱 → HTML 樣板檔案名稱（樣板檔案放在 apps-script/webapp/ 底下，需另外貼進 Apps Script 編輯器）
+const PAGE_TEMPLATES = {
+  index: 'Index',
+  generate: 'Generate',
+  activities: 'Activities',
+  ideas: 'Ideas',
+};
+
 function doGet(e) {
   const type = e.parameter.type;
   if (type === 'activities') return respond(getRows(SHEET_ACTIVITIES, ACTIVITIES_HEADERS));
   if (type === 'ideas') return respond(getRows(SHEET_IDEAS, IDEAS_HEADERS));
-  return respond({ error: 'unknown type: ' + type });
+  if (type) return respond({ error: 'unknown type: ' + type });
+
+  const page = PAGE_TEMPLATES[e.parameter.page] ? e.parameter.page : 'index';
+  const template = HtmlService.createTemplateFromFile(PAGE_TEMPLATES[page]);
+  template.baseUrl = ScriptApp.getService().getUrl();
+  return template.evaluate()
+    .setTitle('傳說對決 H5 活動中心')
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+// 給 HTML 樣板用來內嵌共用檔案（Shared.html）的小工具
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+// ---------- 給前端用 google.script.run 呼叫的包裝函式 ----------
+// 前端（Shared.html）透過 google.script.run 呼叫這幾個函式讀寫資料，
+// 不走 fetch()，所以不會遇到「網域限定存取」造成的登入導向問題。
+
+function getActivitiesForClient() {
+  return getRows(SHEET_ACTIVITIES, ACTIVITIES_HEADERS);
+}
+
+function getIdeasForClient() {
+  return getRows(SHEET_IDEAS, IDEAS_HEADERS);
+}
+
+function addIdeaForClient(data) {
+  return addIdea(data);
+}
+
+function addActivityForClient(data) {
+  return addActivity(data);
+}
+
+function generateSuggestionForClient(data) {
+  return generateSuggestion(data);
 }
 
 function doPost(e) {

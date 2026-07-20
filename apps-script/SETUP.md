@@ -1,37 +1,42 @@
-# 部署共用資料庫（Google Sheets + Apps Script）
+# 部署正式共用版本（Google Sheets + Apps Script）
 
-現在網站是「示範模式」：資料只存在你自己瀏覽器的 localStorage，別人看不到你新增的活動或點子。
-照下面步驟做完後，所有同事打開網站就會讀寫同一份資料。整個過程不需要工程師、不需要架設伺服器。
+因為公司資安政策不開放 Apps Script 部署「所有人」都能存取，只能設「僅限公司網域內的人」。
+這代表網站沒辦法像原本規劃的那樣「GitHub Pages 網站 + 背景呼叫 Apps Script API」——瀏覽器背景呼叫（`fetch()`）不會帶著你的 Google 登入狀態，網域限定的部署會把這種呼叫導向登入頁，抓不到資料。
+
+**所以改成整個網站直接由 Apps Script 提供**：同事要先登入 Garena 的 Google 帳號才能打開網站，網站再透過 Google 官方的 `google.script.run` 機制讀寫資料（不是 `fetch()`，不會有登入導向的問題）。GitHub Pages 那組網址之後只當作示範／預覽版（資料是假的種子資料），正式共用版本的網址會是 `script.google.com/.../exec` 那組。
 
 ## 步驟
 
-1. 開一個新的 Google Sheet（或直接拿你原本整理活動的那份也可以，建議還是開一份新的比較乾淨）。
+1. 開一個新的 Google Sheet（或用你已經建立的那份）。
 2. 上方選單點 **擴充功能 → Apps Script**，會打開一個新分頁的程式碼編輯器。
-3. 把編輯器裡預設的 `myFunction` 內容整個刪掉，貼上本目錄下 [`Code.gs`](./Code.gs) 的全部內容。
-4. 按左上角儲存（磁片圖示），檔案名稱可以隨意取，例如「H5活動中心-API」。
+3. 把編輯器裡預設的 `myFunction` 內容整個刪掉，貼上本目錄下 [`Code.gs`](./Code.gs) 的全部內容，存檔（Ctrl+S）。
+4. 在左側「檔案」旁邊點 **＋ → HTML**，依序建立以下 5 個 HTML 檔案，檔名務必完全一致（不用加 `.html`，Apps Script 會自動加）：
+   - `Shared`
+   - `Index`
+   - `Activities`
+   - `Ideas`
+   - `Generate`
+
+   每個檔案的內容分別貼自本目錄下 [`webapp/Shared.html`](./webapp/Shared.html)、[`webapp/Index.html`](./webapp/Index.html)、[`webapp/Activities.html`](./webapp/Activities.html)、[`webapp/Ideas.html`](./webapp/Ideas.html)、[`webapp/Generate.html`](./webapp/Generate.html)（複製全部內容貼上，不用另外調整），每貼完一個記得存檔。
+
+   完成後左側檔案列表應該有：`Code.gs`、`Shared`、`Index`、`Activities`、`Ideas`、`Generate`，共 6 個檔案。
 5. 點右上角藍色的 **部署 → 新增部署作業**。
    - 類型選擇「網頁應用程式」（Web app）。
    - 「執行身分」選 **我**。
-   - 「誰可以存取」選 **公司內的任何人**（Anyone within Garena，依貴公司網域顯示的名稱為準）。
+   - 「誰可以存取」選 **公司網域內的任何人**（Anyone within Garena，依貴公司網域顯示的名稱為準）。
    - 點「部署」，第一次會要求你**授權**，照畫面指示允許即可（會跳出「未驗證應用程式」的警告，這是正常的，因為是你自己寫的程式，點選「進階」→「前往（專案名稱）」繼續即可）。
 6. 部署完成後會給你一組網址，格式類似：
-   `https://script.google.com/macros/s/AKfycb.../exec`
-   複製這組網址。
-7. 打開專案裡的 [`js/config.js`](../js/config.js)，把網址貼進 `API_URL`：
-   ```js
-   const CONFIG = {
-     API_URL: 'https://script.google.com/macros/s/AKfycb.../exec',
-   };
-   ```
-8. 儲存後重新整理網頁，網站就會自動切換成正式模式（首頁的示範模式提示會消失）。
-9. 之後同事新增的活動 / 點子都會直接寫進第 1 步那個 Google Sheet 裡的 `Activities` / `Ideas` 分頁（第一次有人新增資料時會自動建立分頁與欄位標題）。
+   `https://script.google.com/a/macros/garena.com/s/xxxxx/exec`
+   **這組網址就是正式版網站，之後同事都用這組網址打開**（需要先登入 Garena 的 Google 帳號）。
+7. 之後同事新增的活動 / 點子都會直接寫進第 1 步那個 Google Sheet 裡的 `Activities` / `Ideas` 分頁（第一次有人新增資料時會自動建立分頁與欄位標題）。
+
+## 之後修改網站內容怎麼更新到 Apps Script
+
+`Code.gs` 跟 `webapp/` 裡的檔案之後如果又改版，需要手動把新內容複製貼上覆蓋到 Apps Script 編輯器對應的檔案裡再存檔，**不會自動同步**。網址不會變，同事不用重新打開新連結。
 
 ## 之後怎麼補真實成效數據
 
-有兩種方式都可以：
-
-- **直接在 Google Sheet 編輯**：打開 `Activities` 分頁，找到對應的列，把 `metrics` 欄位填上內容（建議填 JSON 格式的字串，例如 `{"summary":"參與人數 12.4 萬，付費轉換率 3.2%"}`，網站會自動解析並顯示成效摘要；如果只是先貼一段文字也可以，網站會直接顯示這段文字）。
-- **之後請工程師擴充「編輯活動」的表單**：目前網站只有「新增活動」的表單，還沒有「編輯既有活動」的介面，這塊可以之後再視需求擴充。
+打開 Google Sheet 的 `Activities` 分頁，找到對應的列，把 `metrics` 欄位填上內容（建議填 JSON 格式的字串，例如 `{"summary":"參與人數 12.4 萬，付費轉換率 3.2%"}`，網站會自動解析並顯示成效摘要；如果只是先貼一段文字也可以，網站會直接顯示這段文字）。
 
 ## 之後怎麼補過往活動照片
 
@@ -41,19 +46,18 @@
 2. 新增活動時，在「新增活動紀錄」表單的「活動照片」欄位貼上連結，一行一張。
 3. 要幫**既有**活動補照片的話，直接打開 Google Sheet 的 `Activities` 分頁，找到對應的列，在 `images` 欄位貼上連結（同樣一行一張，用 Alt+Enter / Option+Enter 換行），存檔後網站會自動顯示。
 
-之後如果想做成真正的「上傳圖片」按鈕（不用自己找地方上傳、貼連結），需要額外串接 Google Drive API，屬於未來可以擴充的方向。
+之後如果想做成真正的「上傳圖片」按鈕，需要額外串接 Google Drive API，屬於未來可以擴充的方向。
 
 ## 誰能新增/瀏覽資料？
 
-只要能打開這組 Apps Script 網址的人都能讀寫資料（等於整個網站共用一份資料庫，沒有個別帳號登入機制）。
-如果之後需要限制「只有登入 Garena 帳號的人才能新增」或想記錄「是哪個帳號」新增的，需要額外串接 Google 帳號登入（OAuth），這部分目前架構沒有做，屬於未來可以擴充的方向。
+只有登入 Garena Google 帳號的人才能打開網站、讀寫資料——這是部署時「誰可以存取」設定的效果，不需要額外開發登入機制。目前沒有記錄「是哪個帳號」新增資料，只會記錄使用者在表單裡自己填的姓名/暱稱。
 
 ## 啟用「我要找活動」（AI 發想功能）
 
 網站的「我要找活動」頁面（選目的/需求 → AI 生成活動主題建議）需要額外設定一組 Anthropic API 金鑰，跟上面的共用資料庫是分開的步驟。
 
 1. 到 [console.anthropic.com](https://console.anthropic.com) 申請一組 API 金鑰（需要公司內部負責窗口的 Anthropic 帳號，如果沒有請洽 IT 或找已有帳號的同事協助）。
-2. 回到 Apps Script 編輯器（同上面步驟 2 打開的那個），點左側齒輪圖示「**專案設定**」。
+2. 回到 Apps Script 編輯器，點左側齒輪圖示「**專案設定**」。
 3. 往下捲到「**指令碼屬性**」，點「新增指令碼屬性」：
    - 屬性：`ANTHROPIC_API_KEY`
    - 值：貼上你申請到的金鑰（`sk-ant-...` 開頭）
@@ -66,3 +70,7 @@
 - AI 的知識有訓練截止日期，「切中時事」的建議只能提供方向性發想，實際的時事細節、梗的正確性仍需要團隊自行核實與補充，不要照單全收直接發布。
 - 如果 API 金鑰沒設定，網站會顯示提示訊息，不會出現不明錯誤。
 - 金鑰只存在 Google 的「指令碼屬性」裡，不會出現在前端程式碼或網頁原始碼中，同事看不到你的金鑰。
+
+## GitHub Pages 那組網址還有用嗎？
+
+`changti-dotcom.github.io/h5-activity-hub/` 那組網址之後定位是**示範／預覽版**：資料是假的種子範例，不會跟 Apps Script 共用。適合用來單純展示介面長相，或給還沒被加進 Garena Google 網域權限的人先看看樣子。正式使用請一律走 Apps Script 那組網址。
