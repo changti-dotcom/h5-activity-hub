@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>靈感庫 ‧ 傳說對決 H5 活動中心</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="brand"><span class="dot">●</span> 傳說對決 H5 活動中心</div>
+    <div class="nav-links">
+      <a href="index.html">首頁</a>
+      <a href="activities.html">活動資料庫</a>
+      <a href="ideas.html" class="active">靈感庫</a>
+      <a href="generate.html">AI 發想產生器</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="page-header">
+    <h1>靈感庫</h1>
+    <p>同事自由發想的 H5 小遊戲點子，每個點子都會標註是誰提供的。有想法就丟進來，不用先想清楚設計目的或標籤，之後隨時可以再補！</p>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-row">
+      <input type="text" id="searchInput" class="search-input" placeholder="搜尋點子標題或說明關鍵字…">
+      <button class="btn btn-primary btn-sm" id="openAddIdeaBtn">＋ 新增點子</button>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">設計目的</span>
+      <div class="chip-select-group" id="filterPurpose"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">特殊需求</span>
+      <div class="chip-select-group" id="filterSpecial"></div>
+    </div>
+  </div>
+
+  <div id="listMeta" style="margin-bottom:12px;color:var(--color-text-muted);font-size:13px;"></div>
+  <div class="card-grid" id="cardGrid"></div>
+</main>
+
+<footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
+
+<!-- 詳情彈窗 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box" id="detailModalBox"></div>
+</div>
+
+<!-- 新增點子彈窗 -->
+<div class="modal-overlay" id="addIdeaModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addIdeaModal')">✕</button>
+    <h2>新增點子</h2>
+    <div class="modal-sub">把你的靈感記錄下來，讓其他人也能看到、參考、接手發展。只要有標題和名字就能送出，其他都選填。</div>
+    <form id="addIdeaForm">
+      <div class="form-group">
+        <label>點子標題 <span class="hint">必填</span></label>
+        <input type="text" name="title" required placeholder="一句話說明這個點子">
+      </div>
+      <div class="form-group">
+        <label>詳細說明 <span class="hint">選填，先丟出來就好，之後想到再補充也可以</span></label>
+        <textarea name="description" placeholder="玩法怎麼玩？為什麼覺得會吸引玩家？（沒想清楚也沒關係，先寫個大概）"></textarea>
+      </div>
+      <div class="form-group">
+        <label>提供者 <span class="hint">必填，會顯示在點子卡片上</span></label>
+        <input type="text" name="submittedBy" required placeholder="你的姓名或暱稱">
+      </div>
+      <details class="form-group">
+        <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--color-text-muted);">
+          進階資訊（選填，不填也能送出）
+        </summary>
+        <div style="margin-top:12px;">
+          <div class="form-group">
+            <label>設計目的 <span class="hint">選填，可複選</span></label>
+            <div class="chip-select-group" id="formPurposeTags"></div>
+          </div>
+          <div class="form-group">
+            <label>特殊需求 <span class="hint">選填，例如需切中時事、節慶檔期，可複選或直接於下方輸入自訂標籤</span></label>
+            <div class="chip-select-group" id="formSpecialTags"></div>
+            <input type="text" name="customSpecialTags" style="margin-top:8px;" placeholder="其他自訂標籤，用逗號分隔">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>參考／靈感來源 <span class="hint">選填，例如類似哪個過往活動</span></label>
+            <input type="text" name="inspirationRef" placeholder="例：類似「回歸之路 由我指引」的積分機制">
+          </div>
+        </div>
+      </details>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addIdeaModal')">取消</button>
+        <button type="submit" class="btn btn-primary">送出</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ideas.js"></script>
+</body>
+</html>

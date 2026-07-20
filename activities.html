@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>活動資料庫 ‧ 傳說對決 H5 活動中心</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="brand"><span class="dot">●</span> 傳說對決 H5 活動中心</div>
+    <div class="nav-links">
+      <a href="index.html">首頁</a>
+      <a href="activities.html" class="active">活動資料庫</a>
+      <a href="ideas.html">靈感庫</a>
+      <a href="generate.html">AI 發想產生器</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="page-header">
+    <h1>活動資料庫</h1>
+    <p>過往刺激活躍的 H5 小遊戲活動：機制、設計目的、特殊需求與成效。設計新活動前，先篩選看看有沒有類似目的或需求的案例。</p>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-row">
+      <input type="text" id="searchInput" class="search-input" placeholder="搜尋活動名稱或說明關鍵字…">
+      <button class="btn btn-primary btn-sm" id="openAddActivityBtn">＋ 新增活動紀錄</button>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">設計目的</span>
+      <div class="chip-select-group" id="filterPurpose"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">特殊需求</span>
+      <div class="chip-select-group" id="filterSpecial"></div>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">遊戲類型</span>
+      <div class="chip-select-group" id="filterMechanism"></div>
+    </div>
+  </div>
+
+  <div id="listMeta" style="margin-bottom:12px;color:var(--color-text-muted);font-size:13px;"></div>
+  <div class="card-grid" id="cardGrid"></div>
+</main>
+
+<footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
+
+<!-- 詳情彈窗 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box" id="detailModalBox"></div>
+</div>
+
+<!-- 新增活動彈窗 -->
+<div class="modal-overlay" id="addActivityModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('addActivityModal')">✕</button>
+    <h2>新增活動紀錄</h2>
+    <div class="modal-sub">把過往做過（或剛上線）的 H5 活動記錄下來，成效數據之後可以再補上。</div>
+    <form id="addActivityForm">
+      <div class="form-group">
+        <label>活動名稱 <span class="hint">必填</span></label>
+        <input type="text" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>活動期間 <span class="hint">例：2026/07/01–07/15，選填</span></label>
+        <input type="text" name="dateText" placeholder="2026/07/01 10:00–07/15 23:59">
+      </div>
+      <div class="form-group">
+        <label>活動說明 / 獎勵內容</label>
+        <textarea name="description" placeholder="活動提供的獎勵、資源等"></textarea>
+      </div>
+      <div class="form-group">
+        <label>遊戲機制說明 <span class="hint">必填</span></label>
+        <textarea name="mechanism" required placeholder="玩法規則、如何獲得獎勵等"></textarea>
+      </div>
+      <div class="form-group">
+        <label>遊戲類型</label>
+        <div class="chip-select-group" id="formMechanismTags"></div>
+      </div>
+      <div class="form-group">
+        <label>設計目的</label>
+        <div class="chip-select-group" id="formPurposeTags"></div>
+      </div>
+      <div class="form-group">
+        <label>特殊需求</label>
+        <div class="chip-select-group" id="formSpecialTags"></div>
+      </div>
+      <div class="form-group">
+        <label>活動照片 <span class="hint">選填，目前還沒有上傳功能，先貼圖片連結即可（例如 Google Drive 開啟「知道連結的人可查看」後的分享連結、內部圖床等），一行一張</span></label>
+        <textarea name="images" placeholder="https://drive.google.com/...&#10;https://drive.google.com/..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>參考連結 <span class="hint">設計文件、素材連結等，選填</span></label>
+        <input type="text" name="referenceLink" placeholder="https://…">
+      </div>
+      <div class="form-group">
+        <label>記錄人</label>
+        <input type="text" name="createdBy" placeholder="你的姓名或暱稱">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal('addActivityModal')">取消</button>
+        <button type="submit" class="btn btn-primary">送出</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/common.js"></script>
+<script src="js/activities.js"></script>
+</body>
+</html>

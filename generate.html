@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 發想產生器 ‧ 傳說對決 H5 活動中心</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="brand"><span class="dot">●</span> 傳說對決 H5 活動中心</div>
+    <div class="nav-links">
+      <a href="index.html">首頁</a>
+      <a href="activities.html">活動資料庫</a>
+      <a href="ideas.html">靈感庫</a>
+      <a href="generate.html" class="active">AI 發想產生器</a>
+    </div>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="page-header">
+    <h1>AI 發想產生器</h1>
+    <p>選好設計目的與特殊需求，補上你想切中的時事、梗或其他客製化條件，AI 會依團隊過去的活動風格生成新的主題建議。</p>
+  </div>
+
+  <div class="form-banner" id="modeNotice" style="display:none;"></div>
+
+  <div class="filter-bar">
+    <div class="form-group" style="margin-bottom:4px;">
+      <label>設計目的 <span class="hint">可複選</span></label>
+      <div class="chip-select-group" id="purposeSelect"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:4px;">
+      <label>特殊需求 <span class="hint">可複選，或在下方輸入自訂需求</span></label>
+      <div class="chip-select-group" id="specialSelect"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:4px;">
+      <label>客製化需求說明 <span class="hint">例如：想切中的時事話題、目標受眾、檔期限制、想搭配的 IP 等，寫得越具體 AI 生成的建議越貼合</span></label>
+      <textarea id="customRequirement" placeholder="例如：希望搭配 8 月的電競總決賽檔期，主打拉新，機制希望輕量、開發成本低"></textarea>
+    </div>
+    <div class="form-group" style="margin-bottom:4px;">
+      <label>你的名字 <span class="hint">選填，之後若要把建議加入靈感庫會用到</span></label>
+      <input type="text" id="yourName" placeholder="你的姓名或暱稱">
+    </div>
+    <div class="form-actions" style="justify-content:flex-start;margin-top:4px;">
+      <button class="btn btn-primary" id="generateBtn">✨ 產生建議</button>
+    </div>
+  </div>
+
+  <div id="resultArea"></div>
+</main>
+
+<footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
+
+<script src="js/config.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/common.js"></script>
+<script src="js/generate.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>傳說對決 H5 活動資料庫 ‧ 靈感庫</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container">
+    <div class="brand"><span class="dot">●</span> 傳說對決 H5 活動中心</div>
+    <div class="nav-links">
+      <a href="index.html" class="active">首頁</a>
+      <a href="activities.html">活動資料庫</a>
+      <a href="ideas.html">靈感庫</a>
+      <a href="generate.html">AI 發想產生器</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <h1>H5 小遊戲活動資料庫與靈感庫</h1>
+    <p>彙整過往刺激活躍的 H5 小遊戲活動（機制、設計目的、成效），並提供團隊共同貢獻新點子的靈感庫。設計活動前，先來看看過去做過什麼、成效如何，或是找找同事還沒被實現的好點子。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="activities.html">瀏覽活動資料庫</a>
+      <a class="btn btn-ghost" href="ideas.html">前往靈感庫</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="stats-row" id="statsRow">
+    <div class="stat-card"><div class="num">–</div><div class="label">歷史活動筆數</div></div>
+    <div class="stat-card"><div class="num">–</div><div class="label">靈感庫點子數</div></div>
+    <div class="stat-card"><div class="num">–</div><div class="label">遊戲類型分類</div></div>
+    <div class="stat-card"><div class="num">–</div><div class="label">成效數據待補齊</div></div>
+  </div>
+
+  <div class="section-grid">
+    <a class="entry-card" href="activities.html">
+      <h3>📚 活動資料庫</h3>
+      <p>過往 H5 小遊戲活動的機制、設計目的、特殊需求與成效紀錄。可依「目的」「特殊需求」「遊戲類型」篩選，設計新活動前先參考類似案例。</p>
+      <span class="go">前往瀏覽 →</span>
+    </a>
+    <a class="entry-card" href="ideas.html">
+      <h3>💡 靈感庫</h3>
+      <p>同事自由上傳的 H5 小遊戲點子，瀏覽時可看到是誰提供的想法。歡迎把靈光一閃的點子丟進來，說不定就是下一檔活動！</p>
+      <span class="go">前往瀏覽 →</span>
+    </a>
+    <a class="entry-card" href="generate.html">
+      <h3>✨ AI 發想產生器</h3>
+      <p>選好設計目的、特殊需求，補上想切中的時事或客製化條件，讓 AI 依團隊過去的活動風格生成新主題建議，看順眼還能一鍵存進靈感庫。</p>
+      <span class="go">前往使用 →</span>
+    </a>
+  </div>
+
+  <div class="form-banner">
+    目前網站處於<strong>示範模式</strong>：資料來自種子範例，成效數據多數尚待營運團隊補齊。串接正式共用資料庫的方法請見專案內 <code>README.md</code>。
+  </div>
+</main>
+
+<footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
+
+<script src="js/config.js"></script>
+<script src="js/mock-data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/common.js"></script>
+<script>
+  (async function () {
+    try {
+      const [activities, ideas] = await Promise.all([fetchActivities(), fetchIdeas()]);
+      const mechanismSet = new Set();
+      let missingMetrics = 0;
+      activities.forEach((a) => {
+        (a.mechanismTags || []).forEach((t) => mechanismSet.add(t));
+        if (!a.metrics) missingMetrics += 1;
+      });
+      const nums = document.querySelectorAll('#statsRow .num');
+      nums[0].textContent = activities.length;
+      nums[1].textContent = ideas.length;
+      nums[2].textContent = mechanismSet.size;
+      nums[3].textContent = missingMetrics;
+    } catch (e) {
+      console.error(e);
+    }
+  })();
+</script>
+</body>
+</html>
