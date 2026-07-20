@@ -24,7 +24,7 @@ async function fetchActivities() {
     return [...readLocal(LOCAL_KEYS.activities), ...MOCK_ACTIVITIES];
   }
   const res = await fetch(`${CONFIG.API_URL}?type=activities`);
-  if (!res.ok) throw new Error('讀取活動資料庫失敗');
+  if (!res.ok) throw new Error('讀取活動資料失敗');
   return res.json();
 }
 
@@ -33,7 +33,7 @@ async function fetchIdeas() {
     return [...readLocal(LOCAL_KEYS.ideas), ...MOCK_IDEAS];
   }
   const res = await fetch(`${CONFIG.API_URL}?type=ideas`);
-  if (!res.ok) throw new Error('讀取靈感庫失敗');
+  if (!res.ok) throw new Error('讀取活動靈感失敗');
   return res.json();
 }
 

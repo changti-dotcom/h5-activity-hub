@@ -32,7 +32,7 @@ function suggestionCardHtml(s, index) {
         <div class="value">${escapeHtml(s.purposeFit || '')}</div>
       </div>
       <div class="form-actions" style="margin-top:14px;">
-        <button class="btn btn-outline btn-sm add-to-idea-btn" data-index="${index}">＋ 加入靈感庫</button>
+        <button class="btn btn-outline btn-sm add-to-idea-btn" data-index="${index}">＋ 加入活動靈感</button>
       </div>
     </div>
   `;
@@ -54,7 +54,7 @@ async function addSuggestionToIdeaLibrary(index) {
   const s = lastSuggestions[index];
   const submittedBy = document.getElementById('yourName').value.trim();
   if (!submittedBy) {
-    toast('請先在上方填寫「你的名字」，才能加入靈感庫');
+    toast('請先在上方填寫「你的名字」，才能加入活動靈感');
     document.getElementById('yourName').focus();
     return;
   }
@@ -70,10 +70,10 @@ async function addSuggestionToIdeaLibrary(index) {
     submittedBy,
     purposeTags: lastPurposeTags,
     specialTags: lastSpecialTags,
-    inspirationRef: 'AI 發想產生器',
+    inspirationRef: '我要找活動（AI 發想）',
   });
   if (result && result.success) {
-    toast('已加入靈感庫！' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));
+    toast('已加入活動靈感！' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));
   } else {
     toast('加入失敗，請稍後再試');
   }
