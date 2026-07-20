@@ -536,11 +536,13 @@ function callServer(fnName, payload) {
 }
 
 async function fetchActivities() {
-  return callServer('getActivitiesForClient');
+  const result = await callServer('getActivitiesForClient');
+  return Array.isArray(result) ? result : [];
 }
 
 async function fetchIdeas() {
-  return callServer('getIdeasForClient');
+  const result = await callServer('getIdeasForClient');
+  return Array.isArray(result) ? result : [];
 }
 
 async function submitIdea(data) {

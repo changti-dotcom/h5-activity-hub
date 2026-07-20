@@ -105,6 +105,12 @@ const ARRAY_FIELDS = ['mechanismTags', 'purposeTags', 'specialTags'];
 const NEWLINE_ARRAY_FIELDS = ['images'];
 
 function parseCell(header, value) {
+  // Google Sheet 有時會自動把貼上的文字（例如 2026-06-18）判斷成「日期」格式儲存格，
+  // 這種情況 Apps Script 讀到的會是 Date 物件，直接透過 google.script.run 傳回前端時
+  // 容易整包資料序列化失敗（變成 null）。這裡統一轉回純文字字串，避免這個問題。
+  if (Object.prototype.toString.call(value) === '[object Date]') {
+    return value.toISOString();
+  }
   if (ARRAY_FIELDS.indexOf(header) !== -1) {
     return value ? String(value).split(',').map((s) => s.trim()).filter(Boolean) : [];
   }
