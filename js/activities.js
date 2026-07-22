@@ -37,9 +37,7 @@ function matchesFilters(activity) {
 }
 
 function activityCardHtml(a) {
-  const metricsBadge = a.metrics
-    ? `<span class="chip tag-readonly" style="background:#eaf7ee;color:#1e7a3c;border-color:#cdeed6;">已有成效數據</span>`
-    : `<span class="chip tag-readonly tag-todo">成效待補充</span>`;
+  const metricsBadge = metricsBadgeHtml(a.metrics);
   return `
     <div class="item-card" data-id="${a.id}">
       ${cardPhotoHtml(a.images)}
@@ -110,9 +108,7 @@ function openDetail(id) {
 
     <div class="detail-section">
       <div class="label">成效數據</div>
-      ${a.metrics
-        ? `<div class="value">${escapeHtml(a.metrics.summary || '')}</div>`
-        : `<div class="metrics-box">📊 成效數據待補充——待營運團隊整理完成後會更新此區塊。</div>`}
+      ${metricsSectionHtml(a.metrics)}
     </div>
 
     ${a.referenceLink ? `<div class="detail-section"><div class="label">參考連結</div><div class="value"><a href="${escapeHtml(a.referenceLink)}" target="_blank" rel="noopener">${escapeHtml(a.referenceLink)}</a></div></div>` : ''}

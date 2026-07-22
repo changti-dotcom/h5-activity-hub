@@ -35,10 +35,6 @@
       <span class="filter-label">設計目的</span>
       <div class="chip-select-group" id="filterPurpose"></div>
     </div>
-    <div class="filter-row">
-      <span class="filter-label">特殊需求</span>
-      <div class="chip-select-group" id="filterSpecial"></div>
-    </div>
   </div>
 
   <div id="listMeta" style="margin-bottom:12px;color:var(--color-text-muted);font-size:13px;"></div>
@@ -71,6 +67,10 @@
         <label>提供者 <span class="hint">必填，會顯示在點子卡片上</span></label>
         <input type="text" name="submittedBy" required placeholder="你的姓名或暱稱">
       </div>
+      <div class="form-group">
+        <label>示意圖／Demo 照片 <span class="hint">選填，目前還沒有上傳功能，先貼圖片連結即可（例如 Google Drive 開啟「知道連結的人可查看」後的分享連結、內部圖床等）</span></label>
+        <input type="text" name="imageUrl" placeholder="https://drive.google.com/...">
+      </div>
       <details class="form-group">
         <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--color-text-muted);">
           進階資訊（選填，不填也能送出）
@@ -79,11 +79,6 @@
           <div class="form-group">
             <label>設計目的 <span class="hint">選填，可複選</span></label>
             <div class="chip-select-group" id="formPurposeTags"></div>
-          </div>
-          <div class="form-group">
-            <label>特殊需求 <span class="hint">選填，例如需切中時事、節慶檔期，可複選或直接於下方輸入自訂標籤</span></label>
-            <div class="chip-select-group" id="formSpecialTags"></div>
-            <input type="text" name="customSpecialTags" style="margin-top:8px;" placeholder="其他自訂標籤，用逗號分隔">
           </div>
           <div class="form-group" style="margin-bottom:0;">
             <label>參考／靈感來源 <span class="hint">選填，例如類似哪個過往活動</span></label>

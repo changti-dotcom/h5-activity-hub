@@ -23,37 +23,20 @@
 <main class="container">
   <div class="page-header">
     <h1>我要找活動</h1>
-    <p>選好設計目的與特殊需求，補上你想切中的時事、梗或其他客製化條件，AI 會依團隊過去的活動風格生成新的主題建議。</p>
+    <p>選一個這次活動想達成的目標，立即看到團隊過去發想中最對應的活動靈感。</p>
   </div>
 
-  <div class="form-banner" id="modeNotice" style="display:none;"></div>
-
-  <div class="filter-bar">
-    <div class="form-group" style="margin-bottom:4px;">
-      <label>設計目的 <span class="hint">可複選</span></label>
-      <div class="chip-select-group" id="purposeSelect"></div>
-    </div>
-    <div class="form-group" style="margin-bottom:4px;">
-      <label>特殊需求 <span class="hint">可複選，或在下方輸入自訂需求</span></label>
-      <div class="chip-select-group" id="specialSelect"></div>
-    </div>
-    <div class="form-group" style="margin-bottom:4px;">
-      <label>客製化需求說明 <span class="hint">例如：想切中的時事話題、目標受眾、檔期限制、想搭配的 IP 等，寫得越具體 AI 生成的建議越貼合</span></label>
-      <textarea id="customRequirement" placeholder="例如：希望搭配 8 月的電競總決賽檔期，主打拉新，機制希望輕量、開發成本低"></textarea>
-    </div>
-    <div class="form-group" style="margin-bottom:4px;">
-      <label>你的名字 <span class="hint">選填，之後若要把建議加入活動靈感會用到</span></label>
-      <input type="text" id="yourName" placeholder="你的姓名或暱稱">
-    </div>
-    <div class="form-actions" style="justify-content:flex-start;margin-top:4px;">
-      <button class="btn btn-primary" id="generateBtn">✨ 產生建議</button>
-    </div>
-  </div>
+  <div class="goal-grid" id="goalGrid"></div>
 
   <div id="resultArea"></div>
 </main>
 
 <footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
+
+<!-- 詳情彈窗 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box" id="detailModalBox"></div>
+</div>
 
 <script src="js/config.js"></script>
 <script src="js/mock-data.js"></script>
