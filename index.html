@@ -33,13 +33,6 @@
 </header>
 
 <main class="container">
-  <div class="stats-row" id="statsRow">
-    <div class="stat-card"><div class="num">–</div><div class="label">歷史活動筆數</div></div>
-    <div class="stat-card"><div class="num">–</div><div class="label">活動靈感點子數</div></div>
-    <div class="stat-card"><div class="num">–</div><div class="label">遊戲類型分類</div></div>
-    <div class="stat-card"><div class="num">–</div><div class="label">成效數據待補齊</div></div>
-  </div>
-
   <div class="section-grid">
     <a class="entry-card" href="generate.html">
       <h3>✨ 我要找活動</h3>
@@ -65,29 +58,5 @@
 
 <footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
 
-<script src="js/config.js"></script>
-<script src="js/mock-data.js"></script>
-<script src="js/api.js"></script>
-<script src="js/common.js"></script>
-<script>
-  (async function () {
-    try {
-      const [activities, ideas] = await Promise.all([fetchActivities(), fetchIdeas()]);
-      const mechanismSet = new Set();
-      let missingMetrics = 0;
-      activities.forEach((a) => {
-        (a.mechanismTags || []).forEach((t) => mechanismSet.add(t));
-        if (!a.metrics) missingMetrics += 1;
-      });
-      const nums = document.querySelectorAll('#statsRow .num');
-      nums[0].textContent = activities.length;
-      nums[1].textContent = ideas.length;
-      nums[2].textContent = mechanismSet.size;
-      nums[3].textContent = missingMetrics;
-    } catch (e) {
-      console.error(e);
-    }
-  })();
-</script>
 </body>
 </html>
