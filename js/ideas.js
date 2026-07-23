@@ -71,6 +71,7 @@ function openAddOrEditModal(idea) {
   form.description.value = idea ? idea.description || '' : '';
   form.submittedBy.value = idea ? idea.submittedBy || '' : '';
   form.imageUrl.value = idea && idea.images && idea.images[0] ? idea.images[0] : '';
+  form.attachments.value = idea && idea.attachments && idea.attachments.length ? idea.attachments.join('\n') : '';
   form.inspirationRef.value = idea ? idea.inspirationRef || '' : '';
   renderChipSelect(document.getElementById('formPurposeTags'), IDEA_PURPOSE_TAGS, idea ? idea.purposeTags || [] : []);
   openModal('addIdeaModal');
@@ -111,6 +112,10 @@ document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
     description: form.description.value.trim(),
     submittedBy: form.submittedBy.value.trim(),
     images: form.imageUrl.value.trim() ? [form.imageUrl.value.trim()] : [],
+    attachments: form.attachments.value
+      .split('\n')
+      .map((s) => s.trim())
+      .filter(Boolean),
     purposeTags: getSelectedChips(document.getElementById('formPurposeTags')),
     inspirationRef: form.inspirationRef.value.trim(),
   };

@@ -13,9 +13,9 @@
     <div class="brand"><span class="dot">●</span> 傳說對決 H5 活動中心</div>
     <div class="nav-links">
       <a href="index.html">首頁</a>
-      <a href="generate.html">我要找活動</a>
-      <a href="activities.html">過往歷史活動</a>
-      <a href="ideas.html" class="active">我有活動靈感</a>
+      <a href="generate.html" data-tooltip="目前有想活動需求，來參考大家靈感">我要找活動靈感</a>
+      <a href="ideas.html" class="active" data-tooltip="我想到新的活動，想提供給大家">我有活動靈感</a>
+      <a href="activities.html" data-tooltip="以前傳說做過的活動">過往歷史活動</a>
     </div>
   </div>
 </nav>
@@ -70,6 +70,10 @@
       <div class="form-group">
         <label>示意圖／Demo 照片 <span class="hint">選填，目前還沒有上傳功能，先貼圖片連結即可（例如 Google Drive 開啟「知道連結的人可查看」後的分享連結、內部圖床等）</span></label>
         <input type="text" name="imageUrl" placeholder="https://drive.google.com/...">
+      </div>
+      <div class="form-group">
+        <label>附件 <span class="hint">選填，工單、Excel 等檔案目前還沒有上傳功能，請先把檔案上傳到公司內部空間（Google Drive、內部wiki等，記得開「知道連結的人可查看」），這裡貼連結即可，一行一個</span></label>
+        <textarea name="attachments" placeholder="https://drive.google.com/...（工單）&#10;https://drive.google.com/...（Excel 試算表）"></textarea>
       </div>
       <details class="form-group">
         <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--color-text-muted);">

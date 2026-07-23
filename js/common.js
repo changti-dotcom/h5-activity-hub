@@ -58,6 +58,16 @@ function normalizeImageUrl(url) {
   return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000` : trimmed;
 }
 
+function attachmentListHtml(attachments) {
+  if (!attachments || !attachments.length) return '';
+  return `<div class="attachment-list">${attachments
+    .map(
+      (url, i) =>
+        `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="attachment-link">📎 附件 ${i + 1}</a>`
+    )
+    .join('')}</div>`;
+}
+
 function cardPhotoHtml(images) {
   if (images && images.length) {
     return `<div class="card-photo"><img src="${escapeHtml(normalizeImageUrl(images[0]))}" alt="" loading="lazy" onerror="this.closest('.card-photo').classList.add('img-error')"></div>`;
@@ -191,7 +201,7 @@ function ideaCardHtml(idea) {
           <span class="avatar-circle">${escapeHtml(initialsOf(idea.submittedBy))}</span>
           ${escapeHtml(idea.submittedBy || '匿名')}
         </span>
-        <span>${formatDateShort(idea.createdAt)}</span>
+        <span>${idea.attachments && idea.attachments.length ? `📎 ${idea.attachments.length}　` : ''}${formatDateShort(idea.createdAt)}</span>
       </div>
     </div>
   `;
@@ -224,6 +234,8 @@ function renderIdeaDetailModal(idea, opts) {
     </div>
 
     ${idea.inspirationRef ? `<div class="detail-section"><div class="label">參考／靈感來源</div><div class="value">${escapeHtml(idea.inspirationRef)}</div></div>` : ''}
+
+    ${idea.attachments && idea.attachments.length ? `<div class="detail-section"><div class="label">附件</div>${attachmentListHtml(idea.attachments)}</div>` : ''}
 
     ${opts.manageActions ? `
     <div class="form-actions" style="justify-content:flex-start;border-top:1px solid var(--color-border);padding-top:16px;">
