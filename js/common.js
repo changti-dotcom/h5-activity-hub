@@ -45,9 +45,22 @@ function purposeTagsOrTodo(tags) {
   return tagChip('設計目的待補充', 'todo');
 }
 
+// Google Drive「分享連結」（.../file/d/FILE_ID/view 或 open?id=FILE_ID）本質上是預覽頁面網址，
+// 不是圖片檔案本身，直接當 <img src> 用會顯示不出來。這裡在「顯示時」自動轉成 Google 官方的
+// 縮圖端點，不會更動使用者實際貼上、儲存的原始連結。
+function normalizeImageUrl(url) {
+  if (!url) return url;
+  const trimmed = String(url).trim();
+  if (!trimmed.includes('drive.google.com') || trimmed.includes('/thumbnail')) return trimmed;
+  const fileMatch = trimmed.match(/\/file\/d\/([^/]+)/);
+  const idParamMatch = trimmed.match(/[?&]id=([^&]+)/);
+  const fileId = fileMatch ? fileMatch[1] : idParamMatch ? idParamMatch[1] : null;
+  return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000` : trimmed;
+}
+
 function cardPhotoHtml(images) {
   if (images && images.length) {
-    return `<div class="card-photo"><img src="${escapeHtml(images[0])}" alt="" loading="lazy" onerror="this.closest('.card-photo').classList.add('img-error')"></div>`;
+    return `<div class="card-photo"><img src="${escapeHtml(normalizeImageUrl(images[0]))}" alt="" loading="lazy" onerror="this.closest('.card-photo').classList.add('img-error')"></div>`;
   }
   return `<div class="card-photo photo-placeholder"><span>🖼️ 尚無照片</span></div>`;
 }
@@ -59,7 +72,7 @@ function photoGalleryHtml(images) {
   return `<div class="photo-gallery">${images
     .map(
       (url) =>
-        `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="photo-gallery-item"><img src="${escapeHtml(url)}" alt="" loading="lazy"></a>`
+        `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="photo-gallery-item"><img src="${escapeHtml(normalizeImageUrl(url))}" alt="" loading="lazy"></a>`
     )
     .join('')}</div>`;
 }
