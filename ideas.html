@@ -52,7 +52,7 @@
 <div class="modal-overlay" id="addIdeaModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('addIdeaModal')">✕</button>
-    <h2>新增點子</h2>
+    <h2 id="addIdeaModalTitle">新增點子</h2>
     <div class="modal-sub">把你的靈感記錄下來，讓其他人也能看到、參考、接手發展。只要有標題和名字就能送出，其他都選填。</div>
     <form id="addIdeaForm">
       <div class="form-group">
@@ -88,7 +88,7 @@
       </details>
       <div class="form-actions">
         <button type="button" class="btn btn-outline" onclick="closeModal('addIdeaModal')">取消</button>
-        <button type="submit" class="btn btn-primary">送出</button>
+        <button type="submit" class="btn btn-primary" id="addIdeaSubmitBtn">送出</button>
       </div>
     </form>
   </div>

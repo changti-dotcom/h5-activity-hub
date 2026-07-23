@@ -184,7 +184,8 @@ function ideaCardHtml(idea) {
   `;
 }
 
-function renderIdeaDetailModal(idea) {
+function renderIdeaDetailModal(idea, opts) {
+  opts = opts || {};
   const box = document.getElementById('detailModalBox');
   box.innerHTML = `
     <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
@@ -210,6 +211,12 @@ function renderIdeaDetailModal(idea) {
     </div>
 
     ${idea.inspirationRef ? `<div class="detail-section"><div class="label">參考／靈感來源</div><div class="value">${escapeHtml(idea.inspirationRef)}</div></div>` : ''}
+
+    ${opts.manageActions ? `
+    <div class="form-actions" style="justify-content:flex-start;border-top:1px solid var(--color-border);padding-top:16px;">
+      <button type="button" class="btn btn-outline btn-sm manage-edit-btn" data-id="${escapeHtml(idea.id)}">✏️ 編輯</button>
+      <button type="button" class="btn btn-outline btn-sm manage-delete-btn" data-id="${escapeHtml(idea.id)}" style="color:var(--color-danger);border-color:#f0b8b1;">🗑️ 刪除</button>
+    </div>` : ''}
   `;
   openModal('detailModal');
 }

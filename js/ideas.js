@@ -1,6 +1,7 @@
 let ALL_IDEAS = [];
 const activeFilters = { purpose: new Set() };
 let searchTerm = '';
+let editingIdeaId = null;
 
 const IDEA_PURPOSE_TAGS = GOAL_TAGS.map((g) => g.key);
 
@@ -44,17 +45,52 @@ function renderList() {
   });
 }
 
+async function reloadIdeas() {
+  ALL_IDEAS = await fetchIdeas();
+  ALL_IDEAS.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  renderList();
+}
+
 function openDetail(id) {
   const idea = ALL_IDEAS.find((x) => x.id === id);
   if (!idea) return;
-  renderIdeaDetailModal(idea);
+  renderIdeaDetailModal(idea, { manageActions: true });
+  const box = document.getElementById('detailModalBox');
+  const editBtn = box.querySelector('.manage-edit-btn');
+  const deleteBtn = box.querySelector('.manage-delete-btn');
+  if (editBtn) editBtn.addEventListener('click', () => openAddOrEditModal(idea));
+  if (deleteBtn) deleteBtn.addEventListener('click', () => handleDeleteIdea(idea));
+}
+
+function openAddOrEditModal(idea) {
+  editingIdeaId = idea ? idea.id : null;
+  document.getElementById('addIdeaModalTitle').textContent = idea ? '編輯點子' : '新增點子';
+  document.getElementById('addIdeaSubmitBtn').textContent = idea ? '儲存變更' : '送出';
+  const form = document.getElementById('addIdeaForm');
+  form.title.value = idea ? idea.title || '' : '';
+  form.description.value = idea ? idea.description || '' : '';
+  form.submittedBy.value = idea ? idea.submittedBy || '' : '';
+  form.imageUrl.value = idea && idea.images && idea.images[0] ? idea.images[0] : '';
+  form.inspirationRef.value = idea ? idea.inspirationRef || '' : '';
+  renderChipSelect(document.getElementById('formPurposeTags'), IDEA_PURPOSE_TAGS, idea ? idea.purposeTags || [] : []);
+  openModal('addIdeaModal');
+}
+
+async function handleDeleteIdea(idea) {
+  if (!confirm(`確定要刪除「${idea.title}」嗎？此動作無法復原。`)) return;
+  const result = await deleteIdea(idea.id);
+  if (result && result.success) {
+    toast('已刪除該則點子');
+    closeModal('detailModal');
+    await reloadIdeas();
+  } else {
+    toast('刪除失敗，請稍後再試');
+  }
 }
 
 async function init() {
-  ALL_IDEAS = await fetchIdeas();
-  ALL_IDEAS.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  await reloadIdeas();
   buildFilterChips('filterPurpose', IDEA_PURPOSE_TAGS, 'purpose');
-  renderList();
 
   document.getElementById('searchInput').addEventListener(
     'input',
@@ -65,10 +101,7 @@ async function init() {
   );
 }
 
-document.getElementById('openAddIdeaBtn').addEventListener('click', () => {
-  renderChipSelect(document.getElementById('formPurposeTags'), IDEA_PURPOSE_TAGS, []);
-  openModal('addIdeaModal');
-});
+document.getElementById('openAddIdeaBtn').addEventListener('click', () => openAddOrEditModal(null));
 
 document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -82,16 +115,18 @@ document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
     inspirationRef: form.inspirationRef.value.trim(),
   };
   if (!data.title || !data.submittedBy) return;
-  const result = await submitIdea(data);
+
+  const result = editingIdeaId ? await updateIdea(editingIdeaId, data) : await submitIdea(data);
+
   if (result && result.success) {
-    toast('已新增點子，感謝分享！' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));
+    toast(editingIdeaId ? '已更新點子！' : '已新增點子，感謝分享！' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));
     form.reset();
+    editingIdeaId = null;
     closeModal('addIdeaModal');
-    ALL_IDEAS = await fetchIdeas();
-    ALL_IDEAS.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-    renderList();
+    closeModal('detailModal');
+    await reloadIdeas();
   } else {
-    toast('新增失敗，請稍後再試');
+    toast(editingIdeaId ? '更新失敗，請稍後再試' : '新增失敗，請稍後再試');
   }
 });
 
