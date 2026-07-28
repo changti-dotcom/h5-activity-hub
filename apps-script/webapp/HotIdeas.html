@@ -11,7 +11,7 @@
 
 <nav class="topnav">
   <div class="container">
-    <div class="brand"><img class="game-logo" data-logo alt="傳說對決"><span>活動靈感大對決</span><span class="brand-sub">傳說營運的靈感倉庫</span></div>
+    <div class="brand"><img class="game-logo" src="https://changti-dotcom.github.io/h5-activity-hub/assets/aov-logo.png" alt="傳說對決"><span>活動靈感大對決</span><span class="brand-sub">傳說營運的靈感倉庫</span></div>
     <div class="nav-links">
       <a href="<?= baseUrl ?>">首頁</a>
       <a href="<?= baseUrl ?>?page=generate" data-tooltip="目前有想活動需求，來參考大家靈感">我要找活動靈感</a>
@@ -232,17 +232,20 @@ document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
   };
   if (!data.title || !data.submittedBy) return;
 
-  const result = editingIdeaId ? await updateHotIdea(editingIdeaId, data) : await submitHotIdea(data);
-
-  if (result && result.success) {
-    toast(editingIdeaId ? '已更新點子！' : '已新增點子，感謝分享！');
-    form.reset();
-    editingIdeaId = null;
-    closeModal('addIdeaModal');
-    closeModal('detailModal');
-    await reloadIdeas();
-  } else {
-    toast(editingIdeaId ? '更新失敗，請稍後再試' : '新增失敗，請稍後再試');
+  try {
+    const result = editingIdeaId ? await updateHotIdea(editingIdeaId, data) : await submitHotIdea(data);
+    if (result && result.success) {
+      toast(editingIdeaId ? '已更新點子！' : '已新增點子，感謝分享！');
+      form.reset();
+      editingIdeaId = null;
+      closeModal('addIdeaModal');
+      closeModal('detailModal');
+      await reloadIdeas();
+    } else {
+      toast('儲存失敗：' + ((result && result.error) ? result.error : '請稍後再試'));
+    }
+  } catch (err) {
+    toast('儲存發生錯誤：' + ((err && err.message) ? err.message : String(err)));
   }
 });
 
