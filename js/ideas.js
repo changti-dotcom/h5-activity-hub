@@ -1,3 +1,14 @@
+// 這份檔案同時給「我有 H5 活動靈感」(ideas.html) 跟「我有熱點活動靈感」(hotideas.html) 共用，
+// 兩邊的上傳/編輯/刪除/篩選邏輯完全一樣，差別只在資料來源。hotideas.html 會在載入這支檔案前，
+// 先設定 window.IDEAS_PAGE_API 指向熱點靈感專用的 fetch/submit/update/remove 函式；
+// 沒有設定的話（例如 ideas.html）就預設用「我有 H5 活動靈感」的函式。
+const IDEAS_API = window.IDEAS_PAGE_API || {
+  fetch: fetchIdeas,
+  submit: submitIdea,
+  update: updateIdea,
+  remove: deleteIdea,
+};
+
 let ALL_IDEAS = [];
 const activeFilters = { purpose: new Set() };
 let searchTerm = '';
@@ -46,7 +57,7 @@ function renderList() {
 }
 
 async function reloadIdeas() {
-  ALL_IDEAS = await fetchIdeas();
+  ALL_IDEAS = await IDEAS_API.fetch();
   ALL_IDEAS.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
   renderList();
 }
@@ -71,6 +82,7 @@ function openAddOrEditModal(idea) {
   form.description.value = idea ? idea.description || '' : '';
   form.submittedBy.value = idea ? idea.submittedBy || '' : '';
   form.imageUrl.value = idea && idea.images && idea.images[0] ? idea.images[0] : '';
+  form.demoUrl.value = idea ? idea.demoUrl || '' : '';
   form.attachments.value = idea && idea.attachments && idea.attachments.length ? idea.attachments.join('\n') : '';
   form.inspirationRef.value = idea ? idea.inspirationRef || '' : '';
   renderChipSelect(document.getElementById('formPurposeTags'), IDEA_PURPOSE_TAGS, idea ? idea.purposeTags || [] : []);
@@ -79,7 +91,7 @@ function openAddOrEditModal(idea) {
 
 async function handleDeleteIdea(idea) {
   if (!confirm(`確定要刪除「${idea.title}」嗎？此動作無法復原。`)) return;
-  const result = await deleteIdea(idea.id);
+  const result = await IDEAS_API.remove(idea.id);
   if (result && result.success) {
     toast('已刪除該則點子');
     closeModal('detailModal');
@@ -112,6 +124,7 @@ document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
     description: form.description.value.trim(),
     submittedBy: form.submittedBy.value.trim(),
     images: form.imageUrl.value.trim() ? [form.imageUrl.value.trim()] : [],
+    demoUrl: form.demoUrl.value.trim(),
     attachments: form.attachments.value
       .split('\n')
       .map((s) => s.trim())
@@ -121,7 +134,7 @@ document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
   };
   if (!data.title || !data.submittedBy) return;
 
-  const result = editingIdeaId ? await updateIdea(editingIdeaId, data) : await submitIdea(data);
+  const result = editingIdeaId ? await IDEAS_API.update(editingIdeaId, data) : await IDEAS_API.submit(data);
 
   if (result && result.success) {
     toast(editingIdeaId ? '已更新點子！' : '已新增點子，感謝分享！' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));

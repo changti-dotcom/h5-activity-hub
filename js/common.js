@@ -58,6 +58,11 @@ function normalizeImageUrl(url) {
   return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000` : trimmed;
 }
 
+function demoLinkHtml(demoUrl) {
+  if (!demoUrl) return '';
+  return `<a href="${escapeHtml(demoUrl)}" target="_blank" rel="noopener" class="demo-link">▶ 開啟 Demo 網頁</a>`;
+}
+
 function attachmentListHtml(attachments) {
   if (!attachments || !attachments.length) return '';
   return `<div class="attachment-list">${attachments
@@ -195,6 +200,7 @@ function ideaCardHtml(idea) {
       <div class="desc">${escapeHtml(idea.description)}</div>
       <div class="tag-row">
         ${(idea.purposeTags || []).map((t) => tagChip(t, 'purpose')).join('')}
+        ${idea.demoUrl ? `<span class="demo-badge">🎮 有 Demo</span>` : ''}
       </div>
       <div class="footer-row">
         <span class="author-badge">
@@ -222,6 +228,8 @@ function renderIdeaDetailModal(idea, opts) {
       <div class="label">示意圖／Demo 照片</div>
       ${photoGalleryHtml(idea.images)}
     </div>
+
+    ${idea.demoUrl ? `<div class="detail-section"><div class="label">互動 Demo</div>${demoLinkHtml(idea.demoUrl)}</div>` : ''}
 
     <div class="detail-section">
       <div class="label">詳細說明</div>
