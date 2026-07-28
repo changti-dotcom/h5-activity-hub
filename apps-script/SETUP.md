@@ -10,16 +10,19 @@
 1. 開一個新的 Google Sheet（或用你已經建立的那份）。
 2. 上方選單點 **擴充功能 → Apps Script**，會打開一個新分頁的程式碼編輯器。
 3. 把編輯器裡預設的 `myFunction` 內容整個刪掉，貼上本目錄下 [`Code.gs`](./Code.gs) 的全部內容，存檔（Ctrl+S）。
-4. 在左側「檔案」旁邊點 **＋ → HTML**，依序建立以下 5 個 HTML 檔案，檔名務必完全一致（不用加 `.html`，Apps Script 會自動加）：
+4. 在左側「檔案」旁邊點 **＋ → HTML**，依序建立以下 6 個 HTML 檔案，檔名務必完全一致（不用加 `.html`，Apps Script 會自動加）：
    - `Shared`
    - `Index`
    - `Activities`
    - `Ideas`
+   - `HotIdeas`
    - `Generate`
 
-   每個檔案的內容分別貼自本目錄下 [`webapp/Shared.html`](./webapp/Shared.html)、[`webapp/Index.html`](./webapp/Index.html)、[`webapp/Activities.html`](./webapp/Activities.html)、[`webapp/Ideas.html`](./webapp/Ideas.html)、[`webapp/Generate.html`](./webapp/Generate.html)（複製全部內容貼上，不用另外調整），每貼完一個記得存檔。
+   每個檔案的內容分別貼自本目錄下 [`webapp/Shared.html`](./webapp/Shared.html)、[`webapp/Index.html`](./webapp/Index.html)、[`webapp/Activities.html`](./webapp/Activities.html)、[`webapp/Ideas.html`](./webapp/Ideas.html)、[`webapp/HotIdeas.html`](./webapp/HotIdeas.html)、[`webapp/Generate.html`](./webapp/Generate.html)（複製全部內容貼上，不用另外調整），每貼完一個記得存檔。
 
-   完成後左側檔案列表應該有：`Code.gs`、`Shared`、`Index`、`Activities`、`Ideas`、`Generate`，共 6 個檔案。
+   `Shared.html` 檔案較大（內嵌了傳說對決 logo 的圖片資料，貼上時請確認整份內容完整貼滿，沒有被截斷）。
+
+   完成後左側檔案列表應該有：`Code.gs`、`Shared`、`Index`、`Activities`、`Ideas`、`HotIdeas`、`Generate`，共 7 個檔案。
 5. 點右上角藍色的 **部署 → 新增部署作業**。
    - 類型選擇「網頁應用程式」（Web app）。
    - 「執行身分」選 **我**。
@@ -28,7 +31,7 @@
 6. 部署完成後會給你一組網址，格式類似：
    `https://script.google.com/a/macros/garena.com/s/xxxxx/exec`
    **這組網址就是正式版網站，之後同事都用這組網址打開**（需要先登入 Garena 的 Google 帳號）。
-7. 之後同事新增的活動 / 點子都會直接寫進第 1 步那個 Google Sheet 裡的 `Activities` / `Ideas` 分頁（第一次有人新增資料時會自動建立分頁與欄位標題）。
+7. 之後同事新增的活動 / 點子都會直接寫進第 1 步那個 Google Sheet 裡的 `Activities` / `Ideas` / `HotIdeas` 分頁（第一次有人新增資料時會自動建立分頁與欄位標題）。同事在網站上新增、編輯或刪除的靈感都是即時寫回這份 Sheet，其他登入的同事重新整理頁面就會看到最新內容。
 
 ## 之後修改網站內容怎麼更新到 Apps Script
 
@@ -52,24 +55,9 @@
 
 只有登入 Garena Google 帳號的人才能打開網站、讀寫資料——這是部署時「誰可以存取」設定的效果，不需要額外開發登入機制。目前沒有記錄「是哪個帳號」新增資料，只會記錄使用者在表單裡自己填的姓名/暱稱。
 
-## 啟用「我要找活動」（AI 發想功能）
+## 「我要找活動靈感」怎麼運作
 
-網站的「我要找活動」頁面（選目的/需求 → AI 生成活動主題建議）需要額外設定一組 Anthropic API 金鑰，跟上面的共用資料庫是分開的步驟。
-
-1. 到 [console.anthropic.com](https://console.anthropic.com) 申請一組 API 金鑰（需要公司內部負責窗口的 Anthropic 帳號，如果沒有請洽 IT 或找已有帳號的同事協助）。
-2. 回到 Apps Script 編輯器，點左側齒輪圖示「**專案設定**」。
-3. 往下捲到「**指令碼屬性**」，點「新增指令碼屬性」：
-   - 屬性：`ANTHROPIC_API_KEY`
-   - 值：貼上你申請到的金鑰（`sk-ant-...` 開頭）
-   - 儲存
-4. 不需要重新部署，設定完立刻生效——回到網站的「我要找活動」頁面測試看看。
-
-**費用說明**：每次產生建議大約消耗 1,000～2,000 tokens，用預設模型（Opus）大約是幾分錢台幣等級的費用，會計入你申請金鑰所屬的 Anthropic 帳單。如果用量大、想降低成本，可以打開 [`Code.gs`](./Code.gs) 把 `CLAUDE_MODEL` 常數從 `'claude-opus-4-8'` 改成 `'claude-sonnet-5'`（品質接近、成本較低）或 `'claude-haiku-4-5'`（最便宜，發想品質會較陽春），改完存檔即生效。
-
-**注意事項**：
-- AI 的知識有訓練截止日期，「切中時事」的建議只能提供方向性發想，實際的時事細節、梗的正確性仍需要團隊自行核實與補充，不要照單全收直接發布。
-- 如果 API 金鑰沒設定，網站會顯示提示訊息，不會出現不明錯誤。
-- 金鑰只存在 Google 的「指令碼屬性」裡，不會出現在前端程式碼或網頁原始碼中，同事看不到你的金鑰。
+這個頁面**不是** AI 生成，而是選一個目標（提升主要模式時長／其他模式時長／非對局在線時長／登入率），立即篩選出「我有H5活動靈感」靈感庫裡標註對應目標的點子。同事新增點子時，在表單的「進階資訊 → 設計目的」勾選對應目標，就會被這個頁面篩選到。
 
 ## GitHub Pages 那組網址還有用嗎？
 
