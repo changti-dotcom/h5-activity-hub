@@ -7,7 +7,7 @@
 <title>活動靈感大對決 ‧ 傳說營運的靈感倉庫</title>
 <?!= include('Shared'); ?>
 </head>
-<body>
+<body data-page="index">
 
 <nav class="topnav">
   <div class="container">
@@ -74,26 +74,5 @@
 
 <footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
 
-<script>
-  (async function () {
-    try {
-      const [activities, ideas, hotIdeas] = await Promise.all([fetchActivities(), fetchIdeas(), fetchHotIdeas()]);
-      const mechanismSet = new Set();
-      let missingMetrics = 0;
-      activities.forEach((a) => {
-        (a.mechanismTags || []).forEach((t) => mechanismSet.add(t));
-        if (!a.metrics) missingMetrics += 1;
-      });
-      const nums = document.querySelectorAll('#statsRow .num');
-      nums[0].textContent = activities.length;
-      nums[1].textContent = ideas.length;
-      nums[2].textContent = hotIdeas.length;
-      nums[3].textContent = mechanismSet.size;
-      nums[4].textContent = missingMetrics;
-    } catch (e) {
-      console.error(e);
-    }
-  })();
-</script>
 </body>
 </html>
