@@ -535,21 +535,25 @@ function normalizeImageUrl(url) {
   return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000` : trimmed;
 }
 
+// 注意：Apps Script 服務 inline <script> 時，會去處理字串裡的 <a href>／<img src> 標籤，
+// 導致這段 JS 語法錯誤（整個 Shared 腳本會掛掉）。因此以下產生連結／圖片的標籤，
+// 開頭的「<」一律寫成 \x3c 跳脫，Apps Script 掃描原始碼時看不到 <a／<img，
+// 但瀏覽器執行時 \x3c 會還原成「<」，產生的仍是正常的 HTML。
 function demoLinkHtml(demoUrl) {
   if (!demoUrl) return '';
-  return `<a href="${escapeHtml(demoUrl)}" target="_blank" rel="noopener" class="demo-link">▶ 開啟 Demo 網頁</a>`;
+  return `\x3ca href="${escapeHtml(demoUrl)}" target="_blank" rel="noopener" class="demo-link">▶ 開啟 Demo 網頁\x3c/a>`;
 }
 
 function attachmentListHtml(attachments) {
   if (!attachments || !attachments.length) return '';
   return `<div class="attachment-list">${attachments
-    .map((url, i) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="attachment-link">📎 附件 ${i + 1}</a>`)
+    .map((url, i) => `\x3ca href="${escapeHtml(url)}" target="_blank" rel="noopener" class="attachment-link">📎 附件 ${i + 1}\x3c/a>`)
     .join('')}</div>`;
 }
 
 function cardPhotoHtml(images) {
   if (images && images.length) {
-    return `<div class="card-photo"><img src="${escapeHtml(normalizeImageUrl(images[0]))}" alt="" loading="lazy" onerror="this.closest('.card-photo').classList.add('img-error')"></div>`;
+    return `<div class="card-photo">\x3cimg src="${escapeHtml(normalizeImageUrl(images[0]))}" alt="" loading="lazy" onerror="this.closest('.card-photo').classList.add('img-error')"></div>`;
   }
   return `<div class="card-photo photo-placeholder"><span>🖼️ 尚無照片</span></div>`;
 }
@@ -559,7 +563,7 @@ function photoGalleryHtml(images) {
     return `<div class="photo-box">🖼️ 照片待補充——之後有活動截圖或素材可以補在這裡。</div>`;
   }
   return `<div class="photo-gallery">${images
-    .map((url) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="photo-gallery-item"><img src="${escapeHtml(normalizeImageUrl(url))}" alt="" loading="lazy"></a>`)
+    .map((url) => `\x3ca href="${escapeHtml(url)}" target="_blank" rel="noopener" class="photo-gallery-item">\x3cimg src="${escapeHtml(normalizeImageUrl(url))}" alt="" loading="lazy">\x3c/a>`)
     .join('')}</div>`;
 }
 

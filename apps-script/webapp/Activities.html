@@ -231,7 +231,7 @@ function openDetail(id) {
         : `<div class="metrics-box">📊 成效數據待補充——待營運團隊整理完成後會更新此區塊。</div>`}
     </div>
 
-    ${a.referenceLink ? `<div class="detail-section"><div class="label">參考連結</div><div class="value"><a href="${escapeHtml(a.referenceLink)}" target="_blank" rel="noopener">${escapeHtml(a.referenceLink)}</a></div></div>` : ''}
+    ${a.referenceLink ? `<div class="detail-section"><div class="label">參考連結</div><div class="value">\x3ca href="${escapeHtml(a.referenceLink)}" target="_blank" rel="noopener">${escapeHtml(a.referenceLink)}\x3c/a></div></div>` : ''}
   `;
   openModal('detailModal');
 }
