@@ -61,6 +61,13 @@ function addActivityForClient(data) {
   return addActivity(data);
 }
 
+function updateActivityForClient(payload) {
+  const data = Object.assign({}, payload);
+  const id = data.id;
+  delete data.id;
+  return updateActivity(id, data);
+}
+
 function getIdeasForClient() {
   return getAllIdeas();
 }
@@ -112,6 +119,7 @@ function doPost(e) {
   if (body.action === 'updateComment') return respond(updateComment(data.id, data.commentId, { author: data.author, text: data.text }));
   if (body.action === 'deleteComment') return respond(deleteComment(data.id, data.commentId));
   if (body.action === 'addActivity') return respond(addActivity(data));
+  if (body.action === 'updateActivity') return respond(updateActivity(data.id, data));
   return respond({ error: 'unknown action: ' + body.action });
 }
 
@@ -373,6 +381,10 @@ function deleteComment(id, commentId) {
 
 function addActivity(data) {
   return addRecord(SHEET_ACTIVITIES, ACTIVITIES_HEADERS, 'activity', data, { createdBy: '匿名', status: 'draft' });
+}
+
+function updateActivity(id, data) {
+  return updateRecord(SHEET_ACTIVITIES, ACTIVITIES_HEADERS, id, data);
 }
 
 function respond(obj) {

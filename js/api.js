@@ -4,6 +4,7 @@
 
 const LOCAL_KEYS = {
   activities: 'h5_local_activities_v1',
+  activityEdits: 'h5_local_activity_edits_v1',
   ideas: 'h5_local_ideas_v1',
   ideaEdits: 'h5_local_idea_edits_v1',
   ideaDeletes: 'h5_local_idea_deletes_v1',
@@ -38,7 +39,9 @@ function writeLocalMap(key, obj) {
 
 async function fetchActivities() {
   if (CONFIG.USE_MOCK) {
-    return [...readLocal(LOCAL_KEYS.activities), ...MOCK_ACTIVITIES];
+    const edits = readLocalMap(LOCAL_KEYS.activityEdits);
+    const seedActivities = MOCK_ACTIVITIES.map((a) => (edits[a.id] ? { ...a, ...edits[a.id] } : a));
+    return [...readLocal(LOCAL_KEYS.activities), ...seedActivities];
   }
   const res = await fetch(`${CONFIG.API_URL}?type=activities`);
   if (!res.ok) throw new Error('讀取活動資料失敗');
@@ -56,6 +59,29 @@ async function submitActivity(data) {
   const res = await fetch(CONFIG.API_URL, {
     method: 'POST',
     body: JSON.stringify({ action: 'addActivity', data }),
+  });
+  return res.json();
+}
+
+async function updateActivity(id, data) {
+  if (CONFIG.USE_MOCK) {
+    if (id.startsWith('local_')) {
+      const list = readLocal(LOCAL_KEYS.activities);
+      const idx = list.findIndex((a) => a.id === id);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...data };
+        writeLocal(LOCAL_KEYS.activities, list);
+      }
+    } else {
+      const edits = readLocalMap(LOCAL_KEYS.activityEdits);
+      edits[id] = { ...(edits[id] || {}), ...data };
+      writeLocalMap(LOCAL_KEYS.activityEdits, edits);
+    }
+    return { success: true, local: true };
+  }
+  const res = await fetch(CONFIG.API_URL, {
+    method: 'POST',
+    body: JSON.stringify({ action: 'updateActivity', data: { id, ...data } }),
   });
   return res.json();
 }

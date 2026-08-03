@@ -65,7 +65,7 @@
 <div class="modal-overlay" id="addActivityModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('addActivityModal')">✕</button>
-    <h2>新增活動紀錄</h2>
+    <h2 id="addActivityModalTitle">新增活動紀錄</h2>
     <div class="modal-sub">把過往做過（或剛上線）的 H5 活動記錄下來，成效數據之後可以再補上。</div>
     <form id="addActivityForm">
       <div class="form-group">
@@ -118,7 +118,7 @@
       </div>
       <div class="form-actions">
         <button type="button" class="btn btn-outline" onclick="closeModal('addActivityModal')">取消</button>
-        <button type="submit" class="btn btn-primary">送出</button>
+        <button type="submit" class="btn btn-primary" id="addActivitySubmitBtn">送出</button>
       </div>
     </form>
   </div>

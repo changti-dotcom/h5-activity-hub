@@ -1,6 +1,7 @@
 let ALL_ACTIVITIES = [];
 const activeFilters = { purpose: new Set(), special: new Set(), mechanism: new Set(), activityType: new Set() };
 let searchTerm = '';
+let editingActivityId = null;
 
 // 設計目的分類基礎跟「我要找活動靈感」「我有活動靈感」統一，用同一份 GOAL_TAGS，
 // 過往歷史活動這裡另外加上三個傳統業務目的分類（留存／拉新／回流），只有這個頁面有。
@@ -119,7 +120,12 @@ function openDetail(id) {
     </div>
 
     ${a.referenceLink ? `<div class="detail-section"><div class="label">參考連結</div><div class="value"><a href="${escapeHtml(a.referenceLink)}" target="_blank" rel="noopener">${escapeHtml(a.referenceLink)}</a></div></div>` : ''}
+
+    <div class="form-actions" style="justify-content:flex-start;border-top:1px solid var(--color-border);padding-top:16px;">
+      <button type="button" class="btn btn-outline btn-sm manage-edit-activity-btn">✏️ 編輯</button>
+    </div>
   `;
+  box.querySelector('.manage-edit-activity-btn').addEventListener('click', () => openAddOrEditActivityModal(a));
   openModal('detailModal');
 }
 
@@ -140,12 +146,26 @@ async function init() {
   );
 }
 
-document.getElementById('openAddActivityBtn').addEventListener('click', () => {
-  renderChipSelect(document.getElementById('formMechanismTags'), MECHANISM_TAGS, []);
-  renderChipSelect(document.getElementById('formPurposeTags'), ACTIVITY_PURPOSE_TAGS, []);
-  renderChipSelect(document.getElementById('formSpecialTags'), SPECIAL_TAG_SUGGESTIONS, []);
+function openAddOrEditActivityModal(activity) {
+  editingActivityId = activity ? activity.id : null;
+  document.getElementById('addActivityModalTitle').textContent = activity ? '編輯活動紀錄' : '新增活動紀錄';
+  document.getElementById('addActivitySubmitBtn').textContent = activity ? '儲存變更' : '送出';
+  const form = document.getElementById('addActivityForm');
+  form.activityType.value = activity ? activity.activityType || '' : '';
+  form.name.value = activity ? activity.name || '' : '';
+  form.dateText.value = activity ? activity.dateText || '' : '';
+  form.description.value = activity ? activity.description || '' : '';
+  form.mechanism.value = activity ? activity.mechanism || '' : '';
+  form.referenceLink.value = activity ? activity.referenceLink || '' : '';
+  form.images.value = activity && activity.images && activity.images.length ? activity.images.join('\n') : '';
+  form.createdBy.value = activity ? activity.createdBy || '' : '';
+  renderChipSelect(document.getElementById('formMechanismTags'), MECHANISM_TAGS, activity ? activity.mechanismTags || [] : []);
+  renderChipSelect(document.getElementById('formPurposeTags'), ACTIVITY_PURPOSE_TAGS, activity ? activity.purposeTags || [] : []);
+  renderChipSelect(document.getElementById('formSpecialTags'), SPECIAL_TAG_SUGGESTIONS, activity ? activity.specialTags || [] : []);
   openModal('addActivityModal');
-});
+}
+
+document.getElementById('openAddActivityBtn').addEventListener('click', () => openAddOrEditActivityModal(null));
 
 document.getElementById('addActivityForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -165,18 +185,23 @@ document.getElementById('addActivityForm').addEventListener('submit', async (e) 
       .map((s) => s.trim())
       .filter(Boolean),
     createdBy: form.createdBy.value.trim() || '匿名',
-    metrics: null,
   };
+  // 新增時預設沒有成效數據；編輯時不能覆蓋掉既有的 metrics（表單本來就沒有這個欄位可以填）
+  if (!editingActivityId) data.metrics = null;
   if (!data.name || !data.mechanism) return;
-  const result = await submitActivity(data);
+
+  const result = editingActivityId ? await updateActivity(editingActivityId, data) : await submitActivity(data);
+
   if (result && result.success) {
-    toast('已新增活動紀錄' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));
+    toast(editingActivityId ? '已更新活動紀錄！' : '已新增活動紀錄' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));
     form.reset();
+    editingActivityId = null;
     closeModal('addActivityModal');
+    closeModal('detailModal');
     ALL_ACTIVITIES = await fetchActivities();
     renderList();
   } else {
-    toast('新增失敗，請稍後再試');
+    toast(editingActivityId ? '更新失敗，請稍後再試' : '新增失敗，請稍後再試');
   }
 });
 
