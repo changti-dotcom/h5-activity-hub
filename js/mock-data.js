@@ -3,11 +3,13 @@
 // 設計目的（拉新/回流/留存...）與成效數據多數尚待營運團隊補齊，先以空值 / 待補充呈現，
 // 待正式串接 Google Sheet 後，可直接在 Sheet 或「新增活動紀錄」表單中補上真實數據。
 // images 為活動照片連結陣列，目前皆為空陣列（尚未收集照片），之後可直接在 Sheet 的 images 欄位貼上圖片連結（一行一個）。
+// activityType：H5活動 / 活動中心活動，這批既有資料都是 H5 小遊戲活動；活動中心活動的歷史資料待補齊。
 
 const MOCK_ACTIVITIES = [
   {
     id: 'seed_01', name: '小遊戲挑戰送元流睡衣套裝', dateText: '2026/06/18 10:00–06/30 23:59',
     dateStart: '2026-06-18', dateEnd: '2026-06-30',
+    activityType: 'H5活動',
     description: '完成小遊戲挑戰可獲得甜夢時光套裝（元流 7011、7012）。',
     mechanism: '2048 玩法，透過合併方塊累積分數達成關卡目標。',
     mechanismTags: ['益智消除'], purposeTags: [], specialTags: [], metrics: null,
@@ -16,6 +18,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_02', name: '源寶旅行日記', dateText: '2026/01/30 14:00–02/06 23:59',
     dateStart: '2026-01-30', dateEnd: '2026-02-06',
+    activityType: 'H5活動',
     description: '',
     mechanism: '玩家可進行「源寶旅行日記」創作，完成日記後累積進度並獲得對應獎勵。',
     mechanismTags: ['任務養成'], purposeTags: [], specialTags: [], metrics: null,
@@ -24,6 +27,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_03', name: '宮中一夢 × 請安大作戰', dateText: '2026/02/19 14:00–03/18 23:59',
     dateStart: '2026-02-19', dateEnd: '2026-03-18',
+    activityType: 'H5活動',
     description: '完成聯動劇情任務可獲得聯動語音、回城特效、加速特效等聯動獎勵。',
     mechanism: '向皇上大聲請安，並躲過其他嬪妃的阻撓，考驗反應速度。',
     mechanismTags: ['反應操作'], purposeTags: [], specialTags: ['IP聯動'], metrics: null,
@@ -32,6 +36,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_04', name: '新年祈福光明燈', dateText: '2025/01/24 16:00–02/03 23:59',
     dateStart: '2025-01-24', dateEnd: '2025-02-03',
+    activityType: 'H5活動',
     description: '',
     mechanism: '點擊各燈下方「去點燈」按鈕查看任務列表，完成任務累積福氣值（鈔能力燈可直接投入金幣點燈）。',
     mechanismTags: ['任務養成'], purposeTags: [], specialTags: ['節慶檔期'],
@@ -41,6 +46,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_05', name: '女僕甜點店', dateText: '2025/02/20 16:00–03/09 23:59',
     dateStart: '2025-02-20', dateEnd: '2025-03-09',
+    activityType: 'H5活動',
     description: '下發羊咩女僕頭像（valorpass9022）。',
     mechanism: '經營甜點店拿好禮！完成任務解鎖餐點種類，上架並獲取收益，兌換里程碑獎勵。',
     mechanismTags: ['經營模擬'], purposeTags: [], specialTags: [], metrics: null,
@@ -49,6 +55,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_07', name: '夏日酥脆挑戰賽', dateText: '2025/06/14 12:00–06/30 23:59',
     dateStart: '2025-06-14', dateEnd: '2025-06-30',
+    activityType: 'H5活動',
     description: '酥脆特派員造型（53008）。',
     mechanism: '摳糖餅、木頭人等反應類小遊戲玩法。',
     mechanismTags: ['反應操作'], purposeTags: [], specialTags: ['節慶檔期'], metrics: null,
@@ -57,6 +64,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_08', name: '貓蟲鑑定送永久表情', dateText: '2025/09/05 14:00–09/21 23:59',
     dateStart: '2025-09-05', dateEnd: '2025-09-21',
+    activityType: 'H5活動',
     description: '完成測驗送永久表情。',
     mechanism: '心理測驗形式，依作答結果分派鑑定結果。',
     mechanismTags: ['心理測驗'], purposeTags: [], specialTags: [],
@@ -66,6 +74,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_13', name: '安奈特的夏日冰坊', dateText: '2024/6/19 10:00–7/7 23:59',
     dateStart: '2024-06-19', dateEnd: '2024-07-07',
+    activityType: 'H5活動',
     description: '里程碑大獎「安奈特-蜜雪澄心」造型（51911）。',
     mechanism: '經營冰鋪拿好禮！完成任務解鎖新冰淇淋種類，上架獲取收益，兌換里程碑獎勵。',
     mechanismTags: ['經營模擬'], purposeTags: [], specialTags: ['節慶檔期'],
@@ -75,6 +84,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_14', name: '屬於我的2024傳說', dateText: '2024/7/6–7/8',
     dateStart: '2024-07-06', dateEnd: '2024-07-08',
+    activityType: 'H5活動',
     description: '開箱必得指定名單造型其中之一，或機會升級進階寶箱。',
     mechanism: '玩家進入活動頁面回顧年度傳說大事記與個人數據，完成回顧後獲得年度回顧驚喜箱。',
     mechanismTags: ['劇情回顧'], purposeTags: [], specialTags: ['週年慶'],
@@ -84,6 +94,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_15', name: '艾森諾攻防戰', dateText: '2024/9/18 16:00–10/6 23:59',
     dateStart: '2024-09-18', dateEnd: '2024-10-06',
+    activityType: 'H5活動',
     description: '四大陣營冠軍相框（帶限時前綴「最強」）。',
     mechanism: '玩家選擇陣營加入，透過每日任務累積「小兵」派遣攻擊領土，依領土佔領結算「戰功」，總結算依陣營戰功排序給予對應獎勵。',
     mechanismTags: ['陣營競賽'], purposeTags: [], specialTags: [],
@@ -93,6 +104,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_16', name: '咒力輸出挑戰', dateText: '2024/11/1 14:00–11/17 23:59',
     dateStart: '2024-11-01', dateEnd: '2024-11-17',
+    activityType: 'H5活動',
     description: '完成積分挑戰送限定表情。',
     mechanism: '拚手速點擊累積咒力，累積達標完成積分挑戰。',
     mechanismTags: ['反應操作'], purposeTags: [], specialTags: ['IP聯動'],
@@ -102,6 +114,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_25', name: '誰是你的幸運女神', dateText: '2023/3/25 00:00–4/6 23:59',
     dateStart: '2023-03-25', dateEnd: '2023-04-06',
+    activityType: 'H5活動',
     description: '資源上架：艾瑞的比心（41322）。',
     mechanism: '心理測驗形式。',
     mechanismTags: ['心理測驗'], purposeTags: [], specialTags: [], metrics: null,
@@ -110,6 +123,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_26', name: '嘉年華樂園', dateText: '2023/4/29–5/14',
     dateStart: '2023-04-29', dateEnd: '2023-05-14',
+    activityType: 'H5活動',
     description: '',
     mechanism: '射箭、打地鼠、放映廳等多款小遊戲合輯。',
     mechanismTags: ['反應操作'], purposeTags: [], specialTags: [], metrics: null,
@@ -118,6 +132,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_29', name: '週年慶回憶錄', dateText: '',
     dateStart: '', dateEnd: '',
+    activityType: 'H5活動',
     description: '完成回顧任務可獲得「週年玩家稱號」。',
     mechanism: '',
     mechanismTags: [], purposeTags: [], specialTags: ['週年慶'],
@@ -127,6 +142,7 @@ const MOCK_ACTIVITIES = [
   {
     id: 'seed_30', name: '源寶洗澡', dateText: '2026/04/20–05/10',
     dateStart: '2026-04-20', dateEnd: '2026-05-10',
+    activityType: 'H5活動',
     description: '完成任務可獲得 MEN\'s Biore 同城裝飾（永久）。',
     mechanism: '「源寶的洗澡日常」，透過洗澡卡與源寶培養親密度，獲得 MEN\'s Biore 聯名回城特效等獎勵。',
     mechanismTags: [], purposeTags: [], specialTags: [],
@@ -135,42 +151,55 @@ const MOCK_ACTIVITIES = [
   },
 ];
 
-// 活動靈感範例資料，方便預覽介面外觀；正式使用時可直接從畫面上刪除或保留給團隊參考。
+// 活動靈感範例資料（H5 活動靈感 + 熱點活動靈感合併在同一個靈感庫，用 ideaType 區分）。
+// 方便預覽介面外觀；正式使用時可直接從畫面上刪除或保留給團隊參考。
 const MOCK_IDEAS = [
   {
     id: 'idea_seed_01',
+    ideaType: 'h5',
     title: '「傳說占卜屋」——用玩家戰績生成專屬運勢卡',
     description: '串接玩家近期對戰數據，生成一張趣味「本週運勢卡」（例如：MVP運、打野運、躲塔運），並附上對應的小任務，完成任務可兌換造型碎片。結合心理測驗的低門檻與個人化戰績的話題性。',
     submittedBy: '陳曉雯',
     images: [],
+    demoUrl: '',
+    topicRef: '',
     attachments: [],
     purposeTags: ['提升非對局在線時長', '提升登入率'],
     inspirationRef: '貓蟲鑑定送永久表情',
+    likes: 0,
+    comments: [],
     createdAt: '2026-05-12T09:00:00.000Z',
   },
   {
     id: 'idea_seed_02',
+    ideaType: 'h5',
     title: '回歸玩家限定「老朋友地圖」',
     description: '針對久未登入的玩家，用一張「回憶地圖」呈現他們過去常用英雄與高光時刻，沿途完成任務逐步解鎖獎勵，最終召喚一位老朋友（好友系統）一起開局可獲得雙倍獎勵。',
     submittedBy: '林柏宇',
     images: [],
+    demoUrl: '',
+    topicRef: '',
     attachments: [],
     purposeTags: ['提升主要模式時長'],
     inspirationRef: '',
+    likes: 0,
+    comments: [],
     createdAt: '2026-05-20T09:00:00.000Z',
   },
   {
     id: 'idea_seed_03',
+    ideaType: 'hotspot',
     title: '暑假限定「電競選手打工日記」',
     description: '結合暑假檔期與電競賽事熱度，玩家體驗「選手一日打工」小遊戲（訓練、採訪、比賽三關卡），完成後可獲得選手周邊造型與賽事門票抽獎資格。',
     submittedBy: '黃紫涵',
     images: [],
+    demoUrl: '',
+    topicRef: '暑假電競賽事熱潮',
     attachments: [],
     purposeTags: ['提升其他模式時長'],
     inspirationRef: '',
+    likes: 0,
+    comments: [],
     createdAt: '2026-06-02T09:00:00.000Z',
   },
 ];
-
-// 「我有熱點活動靈感」目前還沒有真實資料，先留空陣列，讓同事開始丟時事熱點相關的活動點子。
-const MOCK_HOT_IDEAS = [];

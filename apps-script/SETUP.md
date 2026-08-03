@@ -10,19 +10,20 @@
 1. 開一個新的 Google Sheet（或用你已經建立的那份）。
 2. 上方選單點 **擴充功能 → Apps Script**，會打開一個新分頁的程式碼編輯器。
 3. 把編輯器裡預設的 `myFunction` 內容整個刪掉，貼上本目錄下 [`Code.gs`](./Code.gs) 的全部內容，存檔（Ctrl+S）。
-4. 在左側「檔案」旁邊點 **＋ → HTML**，依序建立以下 6 個 HTML 檔案，檔名務必完全一致（不用加 `.html`，Apps Script 會自動加）：
+4. 在左側「檔案」旁邊點 **＋ → HTML**，依序建立以下 5 個 HTML 檔案，檔名務必完全一致（不用加 `.html`，Apps Script 會自動加）：
    - `Shared`
    - `Index`
    - `Activities`
    - `Ideas`
-   - `HotIdeas`
    - `Generate`
 
-   每個檔案的內容分別貼自本目錄下 [`webapp/Shared.html`](./webapp/Shared.html)、[`webapp/Index.html`](./webapp/Index.html)、[`webapp/Activities.html`](./webapp/Activities.html)、[`webapp/Ideas.html`](./webapp/Ideas.html)、[`webapp/HotIdeas.html`](./webapp/HotIdeas.html)、[`webapp/Generate.html`](./webapp/Generate.html)（複製全部內容貼上，不用另外調整），每貼完一個記得存檔。
+   每個檔案的內容分別貼自本目錄下 [`webapp/Shared.html`](./webapp/Shared.html)、[`webapp/Index.html`](./webapp/Index.html)、[`webapp/Activities.html`](./webapp/Activities.html)、[`webapp/Ideas.html`](./webapp/Ideas.html)、[`webapp/Generate.html`](./webapp/Generate.html)（複製全部內容貼上，不用另外調整），每貼完一個記得存檔。
 
    `Shared.html` 檔案較大（內嵌了傳說對決 logo 的圖片資料，貼上時請確認整份內容完整貼滿，沒有被截斷）。
 
-   完成後左側檔案列表應該有：`Code.gs`、`Shared`、`Index`、`Activities`、`Ideas`、`HotIdeas`、`Generate`，共 7 個檔案。
+   完成後左側檔案列表應該有：`Code.gs`、`Shared`、`Index`、`Activities`、`Ideas`、`Generate`，共 6 個檔案。
+
+   > 如果你之前已經部署過、左側還留著一個 `HotIdeas` 檔案：「我有H5活動靈感」跟「我有熱點活動靈感」這兩個頁面已經合併成一個「我有活動靈感」頁面（上傳時改成選類型），`HotIdeas` 這個檔案可以直接在 Apps Script 編輯器裡刪除，不會影響資料——舊的 `HotIdeas` 這個 Google Sheet 分頁如果之前存過真實資料，程式碼會自動讀進來合併顯示，不用手動搬資料。
 5. 點右上角藍色的 **部署 → 新增部署作業**。
    - 類型選擇「網頁應用程式」（Web app）。
    - 「執行身分」選 **我**。
@@ -31,7 +32,7 @@
 6. 部署完成後會給你一組網址，格式類似：
    `https://script.google.com/a/macros/garena.com/s/xxxxx/exec`
    **這組網址就是正式版網站，之後同事都用這組網址打開**（需要先登入 Garena 的 Google 帳號）。
-7. 之後同事新增的活動 / 點子都會直接寫進第 1 步那個 Google Sheet 裡的 `Activities` / `Ideas` / `HotIdeas` 分頁（第一次有人新增資料時會自動建立分頁與欄位標題）。同事在網站上新增、編輯或刪除的靈感都是即時寫回這份 Sheet，其他登入的同事重新整理頁面就會看到最新內容。
+7. 之後同事新增的活動 / 點子都會直接寫進第 1 步那個 Google Sheet 裡的 `Activities` / `Ideas` 分頁（第一次有人新增資料時會自動建立分頁與欄位標題）。同事在網站上新增、編輯或刪除的靈感都是即時寫回這份 Sheet，其他登入的同事重新整理頁面就會看到最新內容。
 
 ## 之後修改網站內容怎麼更新到 Apps Script
 
@@ -57,7 +58,7 @@
 
 ## 「我要找活動靈感」怎麼運作
 
-這個頁面**不是** AI 生成，而是選一個目標（提升主要模式時長／其他模式時長／非對局在線時長／登入率），立即篩選出「我有H5活動靈感」靈感庫裡標註對應目標的點子。同事新增點子時，在表單的「進階資訊 → 設計目的」勾選對應目標，就會被這個頁面篩選到。
+這個頁面**不是** AI 生成，而是選一個目標（提升主要模式時長／其他模式時長／非對局在線時長／登入率／有趣時事梗），立即篩選出「我有活動靈感」靈感庫裡標註對應目標的點子（不分 H5 或熱點活動）。同事新增點子時，在表單的「進階資訊 → 設計目的」勾選對應目標，就會被這個頁面篩選到。
 
 ## GitHub Pages 那組網址還有用嗎？
 

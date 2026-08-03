@@ -1,6 +1,10 @@
 let ALL_ACTIVITIES = [];
-const activeFilters = { purpose: new Set(), special: new Set(), mechanism: new Set() };
+const activeFilters = { purpose: new Set(), special: new Set(), mechanism: new Set(), activityType: new Set() };
 let searchTerm = '';
+
+// 設計目的分類跟「我要找活動靈感」「我有活動靈感」統一，用同一份 GOAL_TAGS
+const ACTIVITY_PURPOSE_TAGS = GOAL_TAGS.map((g) => g.key);
+const ACTIVITY_TYPE_OPTIONS = ['H5活動', '活動中心活動'];
 
 function collectDynamicSpecialTags(activities) {
   const set = new Set(SPECIAL_TAG_SUGGESTIONS);
@@ -25,10 +29,11 @@ function buildFilterChips(containerId, tags, filterKey) {
 }
 
 function matchesFilters(activity) {
-  const { purpose, special, mechanism } = activeFilters;
+  const { purpose, special, mechanism, activityType } = activeFilters;
   if (purpose.size && !(activity.purposeTags || []).some((t) => purpose.has(t))) return false;
   if (special.size && !(activity.specialTags || []).some((t) => special.has(t))) return false;
   if (mechanism.size && !(activity.mechanismTags || []).some((t) => mechanism.has(t))) return false;
+  if (activityType.size && !activityType.has(activity.activityType)) return false;
   if (searchTerm) {
     const hay = `${activity.name} ${activity.description || ''} ${activity.mechanism || ''}`.toLowerCase();
     if (!hay.includes(searchTerm.toLowerCase())) return false;
@@ -45,6 +50,7 @@ function activityCardHtml(a) {
       <div class="meta">${escapeHtml(a.dateText || '日期未提供')}</div>
       <div class="desc">${escapeHtml(a.mechanism || a.description || '')}</div>
       <div class="tag-row">
+        ${a.activityType ? tagChip(a.activityType, 'goal') : ''}
         ${(a.mechanismTags || []).map((t) => tagChip(t, 'mechanism')).join('')}
         ${(a.specialTags || []).map((t) => tagChip(t, 'special')).join('')}
       </div>
@@ -77,7 +83,7 @@ function openDetail(id) {
   box.innerHTML = `
     <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
     <h2>${escapeHtml(a.name)}</h2>
-    <div class="modal-sub">${escapeHtml(a.dateText || '日期未提供')}${a.createdBy ? ' · 記錄人：' + escapeHtml(a.createdBy) : ''}</div>
+    <div class="modal-sub">${a.activityType ? escapeHtml(a.activityType) + ' · ' : ''}${escapeHtml(a.dateText || '日期未提供')}${a.createdBy ? ' · 記錄人：' + escapeHtml(a.createdBy) : ''}</div>
 
     <div class="detail-section">
       <div class="label">活動照片</div>
@@ -118,7 +124,8 @@ function openDetail(id) {
 
 async function init() {
   ALL_ACTIVITIES = await fetchActivities();
-  buildFilterChips('filterPurpose', PURPOSE_TAGS, 'purpose');
+  buildFilterChips('filterActivityType', ACTIVITY_TYPE_OPTIONS, 'activityType');
+  buildFilterChips('filterPurpose', ACTIVITY_PURPOSE_TAGS, 'purpose');
   buildFilterChips('filterSpecial', collectDynamicSpecialTags(ALL_ACTIVITIES), 'special');
   buildFilterChips('filterMechanism', MECHANISM_TAGS, 'mechanism');
   renderList();
@@ -134,7 +141,7 @@ async function init() {
 
 document.getElementById('openAddActivityBtn').addEventListener('click', () => {
   renderChipSelect(document.getElementById('formMechanismTags'), MECHANISM_TAGS, []);
-  renderChipSelect(document.getElementById('formPurposeTags'), PURPOSE_TAGS, []);
+  renderChipSelect(document.getElementById('formPurposeTags'), ACTIVITY_PURPOSE_TAGS, []);
   renderChipSelect(document.getElementById('formSpecialTags'), SPECIAL_TAG_SUGGESTIONS, []);
   openModal('addActivityModal');
 });
@@ -143,6 +150,7 @@ document.getElementById('addActivityForm').addEventListener('submit', async (e) 
   e.preventDefault();
   const form = e.target;
   const data = {
+    activityType: form.activityType.value,
     name: form.name.value.trim(),
     dateText: form.dateText.value.trim(),
     description: form.description.value.trim(),

@@ -1,13 +1,7 @@
-// 這份檔案同時給「我有 H5 活動靈感」(ideas.html) 跟「我有熱點活動靈感」(hotideas.html) 共用，
-// 兩邊的上傳/編輯/刪除/篩選邏輯完全一樣，差別只在資料來源。hotideas.html 會在載入這支檔案前，
-// 先設定 window.IDEAS_PAGE_API 指向熱點靈感專用的 fetch/submit/update/remove 函式；
-// 沒有設定的話（例如 ideas.html）就預設用「我有 H5 活動靈感」的函式。
-const IDEAS_API = window.IDEAS_PAGE_API || {
-  fetch: fetchIdeas,
-  submit: submitIdea,
-  update: updateIdea,
-  remove: deleteIdea,
-};
+// 「我有活動靈感」：H5 活動靈感跟熱點活動靈感合併在同一個靈感庫，
+// 上傳時用「活動類型」選項區分，篩選/排序/按讚留言邏輯兩種類型共用。
+
+const LIKED_IDEAS_KEY = 'h5_liked_ideas_v1';
 
 let ALL_IDEAS = [];
 const activeFilters = { purpose: new Set() };
@@ -15,6 +9,16 @@ let searchTerm = '';
 let editingIdeaId = null;
 
 const IDEA_PURPOSE_TAGS = GOAL_TAGS.map((g) => g.key);
+
+function getLikedIdeaIds() {
+  return new Set(readLocal(LIKED_IDEAS_KEY));
+}
+
+function markIdeaLiked(id) {
+  const liked = getLikedIdeaIds();
+  liked.add(id);
+  writeLocal(LIKED_IDEAS_KEY, [...liked]);
+}
 
 function buildFilterChips(containerId, tags, filterKey) {
   const container = document.getElementById(containerId);
@@ -56,21 +60,83 @@ function renderList() {
   });
 }
 
+// 按讚數多的點子浮上去：先比讚數，同讚數再比新舊
+function sortIdeas(list) {
+  return list.sort((a, b) => (b.likes || 0) - (a.likes || 0) || new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+}
+
 async function reloadIdeas() {
-  ALL_IDEAS = await IDEAS_API.fetch();
-  ALL_IDEAS.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  ALL_IDEAS = sortIdeas(await fetchIdeas());
   renderList();
+}
+
+function wireDetailModalActions(idea) {
+  const box = document.getElementById('detailModalBox');
+  const editBtn = box.querySelector('.manage-edit-btn');
+  const deleteBtn = box.querySelector('.manage-delete-btn');
+  const likeBtn = box.querySelector('.like-btn');
+  const commentForm = box.querySelector('.comment-form');
+
+  if (editBtn) editBtn.addEventListener('click', () => openAddOrEditModal(idea));
+  if (deleteBtn) deleteBtn.addEventListener('click', () => handleDeleteIdea(idea));
+
+  if (likeBtn) {
+    if (getLikedIdeaIds().has(idea.id)) {
+      likeBtn.disabled = true;
+      likeBtn.classList.add('liked');
+      likeBtn.textContent = `👍 已按讚（${idea.likes || 0}）`;
+    } else {
+      likeBtn.addEventListener('click', () => handleLikeIdea(idea));
+    }
+  }
+
+  if (commentForm) {
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleAddComment(idea, commentForm);
+    });
+  }
 }
 
 function openDetail(id) {
   const idea = ALL_IDEAS.find((x) => x.id === id);
   if (!idea) return;
   renderIdeaDetailModal(idea, { manageActions: true });
-  const box = document.getElementById('detailModalBox');
-  const editBtn = box.querySelector('.manage-edit-btn');
-  const deleteBtn = box.querySelector('.manage-delete-btn');
-  if (editBtn) editBtn.addEventListener('click', () => openAddOrEditModal(idea));
-  if (deleteBtn) deleteBtn.addEventListener('click', () => handleDeleteIdea(idea));
+  wireDetailModalActions(idea);
+}
+
+async function handleLikeIdea(idea) {
+  const result = await likeIdea(idea.id);
+  if (result && result.success) {
+    markIdeaLiked(idea.id);
+    await reloadIdeas();
+    const updated = ALL_IDEAS.find((x) => x.id === idea.id) || idea;
+    renderIdeaDetailModal(updated, { manageActions: true });
+    wireDetailModalActions(updated);
+  } else {
+    toast('按讚失敗，請稍後再試');
+  }
+}
+
+async function handleAddComment(idea, form) {
+  const author = form.commentAuthor.value.trim();
+  const text = form.commentText.value.trim();
+  if (!author || !text) return;
+  const result = await addComment(idea.id, { author, text });
+  if (result && result.success) {
+    toast('留言送出！');
+    await reloadIdeas();
+    const updated = ALL_IDEAS.find((x) => x.id === idea.id) || idea;
+    renderIdeaDetailModal(updated, { manageActions: true });
+    wireDetailModalActions(updated);
+  } else {
+    toast('留言失敗，請稍後再試');
+  }
+}
+
+function setIdeaTypeUi(type) {
+  const attachmentsGroup = document.getElementById('attachmentsFieldGroup');
+  attachmentsGroup.style.display = type === 'hotspot' ? 'none' : '';
 }
 
 function openAddOrEditModal(idea) {
@@ -78,11 +144,15 @@ function openAddOrEditModal(idea) {
   document.getElementById('addIdeaModalTitle').textContent = idea ? '編輯點子' : '新增點子';
   document.getElementById('addIdeaSubmitBtn').textContent = idea ? '儲存變更' : '送出';
   const form = document.getElementById('addIdeaForm');
+  const type = idea ? idea.ideaType || 'h5' : 'h5';
+  form.querySelector(`input[name="ideaType"][value="${type}"]`).checked = true;
+  setIdeaTypeUi(type);
   form.title.value = idea ? idea.title || '' : '';
   form.description.value = idea ? idea.description || '' : '';
   form.submittedBy.value = idea ? idea.submittedBy || '' : '';
   form.imageUrl.value = idea && idea.images && idea.images[0] ? idea.images[0] : '';
   form.demoUrl.value = idea ? idea.demoUrl || '' : '';
+  form.topicRef.value = idea ? idea.topicRef || '' : '';
   form.attachments.value = idea && idea.attachments && idea.attachments.length ? idea.attachments.join('\n') : '';
   form.inspirationRef.value = idea ? idea.inspirationRef || '' : '';
   renderChipSelect(document.getElementById('formPurposeTags'), IDEA_PURPOSE_TAGS, idea ? idea.purposeTags || [] : []);
@@ -91,7 +161,7 @@ function openAddOrEditModal(idea) {
 
 async function handleDeleteIdea(idea) {
   if (!confirm(`確定要刪除「${idea.title}」嗎？此動作無法復原。`)) return;
-  const result = await IDEAS_API.remove(idea.id);
+  const result = await deleteIdea(idea.id);
   if (result && result.success) {
     toast('已刪除該則點子');
     closeModal('detailModal');
@@ -112,6 +182,10 @@ async function init() {
       renderList();
     }, 200)
   );
+
+  document.querySelectorAll('input[name="ideaType"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => setIdeaTypeUi(e.target.value));
+  });
 }
 
 document.getElementById('openAddIdeaBtn').addEventListener('click', () => openAddOrEditModal(null));
@@ -119,22 +193,24 @@ document.getElementById('openAddIdeaBtn').addEventListener('click', () => openAd
 document.getElementById('addIdeaForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.target;
+  const ideaType = form.querySelector('input[name="ideaType"]:checked').value;
   const data = {
+    ideaType,
     title: form.title.value.trim(),
     description: form.description.value.trim(),
     submittedBy: form.submittedBy.value.trim(),
     images: form.imageUrl.value.trim() ? [form.imageUrl.value.trim()] : [],
     demoUrl: form.demoUrl.value.trim(),
-    attachments: form.attachments.value
-      .split('\n')
-      .map((s) => s.trim())
-      .filter(Boolean),
+    topicRef: form.topicRef.value.trim(),
+    attachments: ideaType === 'h5'
+      ? form.attachments.value.split('\n').map((s) => s.trim()).filter(Boolean)
+      : [],
     purposeTags: getSelectedChips(document.getElementById('formPurposeTags')),
     inspirationRef: form.inspirationRef.value.trim(),
   };
   if (!data.title || !data.submittedBy) return;
 
-  const result = editingIdeaId ? await IDEAS_API.update(editingIdeaId, data) : await IDEAS_API.submit(data);
+  const result = editingIdeaId ? await updateIdea(editingIdeaId, data) : await submitIdea(data);
 
   if (result && result.success) {
     toast(editingIdeaId ? '已更新點子！' : '已新增點子，感謝分享！' + (result.local ? '（示範模式，僅存在此瀏覽器）' : ''));

@@ -12,12 +12,14 @@ const MECHANISM_TAGS = [
   '抽獎機率', '社交邀請', '陣營競賽', '劇情回顧', '音樂節奏', '其他',
 ];
 
-// 「我要找活動」頁面的四個目標選項，點選後會顯示靈感庫中標註對應 goalTags 的點子
+// 「我要找活動」頁面的目標選項，點選後會顯示靈感庫中標註對應 goalTags 的點子；
+// 「我有活動靈感」新增點子的「設計目的」也用同一份分類，兩邊資料互通。
 const GOAL_TAGS = [
   { key: '提升主要模式時長', icon: '⚔️' },
   { key: '提升其他模式時長', icon: '🎮' },
   { key: '提升非對局在線時長', icon: '🕒' },
   { key: '提升登入率', icon: '📲' },
+  { key: '有趣時事梗', icon: '🔥' },
 ];
 
 function escapeHtml(str) {
@@ -56,6 +58,26 @@ function normalizeImageUrl(url) {
   const idParamMatch = trimmed.match(/[?&]id=([^&]+)/);
   const fileId = fileMatch ? fileMatch[1] : idParamMatch ? idParamMatch[1] : null;
   return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000` : trimmed;
+}
+
+function ideaTypeBadgeHtml(ideaType) {
+  if (ideaType === 'hotspot') return `<span class="chip tag-readonly tag-special">🔥 熱點活動</span>`;
+  return `<span class="chip tag-readonly tag-mechanism">📱 H5活動</span>`;
+}
+
+function commentsListHtml(comments) {
+  if (!comments || !comments.length) {
+    return `<div class="value" style="color:var(--color-text-muted);">還沒有人留言，第一個留言分享想法吧！</div>`;
+  }
+  return `<div class="comment-list">${comments
+    .map(
+      (c) => `
+    <div class="comment-item">
+      <div class="comment-head"><strong>${escapeHtml(c.author || '匿名')}</strong><span>${formatDateShort(c.createdAt)}</span></div>
+      <div class="comment-text">${escapeHtml(c.text)}</div>
+    </div>`
+    )
+    .join('')}</div>`;
 }
 
 function demoLinkHtml(demoUrl) {
@@ -199,6 +221,7 @@ function ideaCardHtml(idea) {
       <div class="title">${escapeHtml(idea.title)}</div>
       <div class="desc">${escapeHtml(idea.description)}</div>
       <div class="tag-row">
+        ${ideaTypeBadgeHtml(idea.ideaType)}
         ${(idea.purposeTags || []).map((t) => tagChip(t, 'purpose')).join('')}
         ${idea.demoUrl ? `<span class="demo-badge">🎮 有 Demo</span>` : ''}
       </div>
@@ -207,7 +230,7 @@ function ideaCardHtml(idea) {
           <span class="avatar-circle">${escapeHtml(initialsOf(idea.submittedBy))}</span>
           ${escapeHtml(idea.submittedBy || '匿名')}
         </span>
-        <span>${idea.attachments && idea.attachments.length ? `📎 ${idea.attachments.length}　` : ''}${formatDateShort(idea.createdAt)}</span>
+        <span>👍 ${idea.likes || 0}　${idea.attachments && idea.attachments.length ? `📎 ${idea.attachments.length}　` : ''}${formatDateShort(idea.createdAt)}</span>
       </div>
     </div>
   `;
@@ -220,6 +243,7 @@ function renderIdeaDetailModal(idea, opts) {
     <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
     <h2>${escapeHtml(idea.title)}</h2>
     <div class="modal-sub">
+      ${ideaTypeBadgeHtml(idea.ideaType)}
       <span class="author-badge"><span class="avatar-circle">${escapeHtml(initialsOf(idea.submittedBy))}</span>${escapeHtml(idea.submittedBy || '匿名')}</span>
       提供 · ${formatDateShort(idea.createdAt)}
     </div>
@@ -236,6 +260,8 @@ function renderIdeaDetailModal(idea, opts) {
       <div class="value">${escapeHtml(idea.description)}</div>
     </div>
 
+    ${idea.topicRef ? `<div class="detail-section"><div class="label">時事議題／時事梗</div><div class="value">${escapeHtml(idea.topicRef)}</div></div>` : ''}
+
     <div class="detail-section">
       <div class="label">設計目的</div>
       ${purposeTagsOrTodo(idea.purposeTags)}
@@ -244,6 +270,27 @@ function renderIdeaDetailModal(idea, opts) {
     ${idea.inspirationRef ? `<div class="detail-section"><div class="label">參考／靈感來源</div><div class="value">${escapeHtml(idea.inspirationRef)}</div></div>` : ''}
 
     ${idea.attachments && idea.attachments.length ? `<div class="detail-section"><div class="label">附件</div>${attachmentListHtml(idea.attachments)}</div>` : ''}
+
+    <div class="detail-section">
+      <div class="label">按讚</div>
+      <button type="button" class="btn btn-outline btn-sm like-btn" data-id="${escapeHtml(idea.id)}">👍 按讚（${idea.likes || 0}）</button>
+    </div>
+
+    <div class="detail-section">
+      <div class="label">留言（${(idea.comments || []).length}）</div>
+      ${commentsListHtml(idea.comments)}
+      <form class="comment-form" data-id="${escapeHtml(idea.id)}" style="margin-top:14px;">
+        <div class="form-group" style="margin-bottom:8px;">
+          <input type="text" name="commentAuthor" placeholder="你的名字" required>
+        </div>
+        <div class="form-group" style="margin-bottom:8px;">
+          <textarea name="commentText" placeholder="覺得這個點子可以怎麼修改？想留言鼓勵一下也可以" required style="min-height:60px;"></textarea>
+        </div>
+        <div class="form-actions" style="margin-top:0;">
+          <button type="submit" class="btn btn-primary btn-sm">送出留言</button>
+        </div>
+      </form>
+    </div>
 
     ${opts.manageActions ? `
     <div class="form-actions" style="justify-content:flex-start;border-top:1px solid var(--color-border);padding-top:16px;">
