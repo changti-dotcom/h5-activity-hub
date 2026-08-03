@@ -339,21 +339,33 @@ function addComment(id, comment) {
   return { success: true };
 }
 
+// 這個功能上線前留下的舊留言沒有 id，前端會改用陣列位置當識別碼（格式 "idx_數字"），
+// 這裡統一還原成實際的陣列索引，讓編輯/刪除對新舊留言都能用。
+function resolveCommentIndex(comments, commentId) {
+  if (String(commentId).indexOf('idx_') === 0) return Number(String(commentId).slice(4));
+  for (let i = 0; i < comments.length; i++) {
+    if (comments[i].id === commentId) return i;
+  }
+  return -1;
+}
+
 function updateComment(id, commentId, data) {
   const cell = getCommentsCell(id);
   if (!cell) return { success: false, error: '找不到這筆資料（可能已被刪除）' };
-  const comments = cell.comments.map(function (c) {
-    return c.id === commentId ? Object.assign({}, c, data) : c;
-  });
-  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(comments));
+  const idx = resolveCommentIndex(cell.comments, commentId);
+  if (idx < 0 || idx >= cell.comments.length) return { success: false, error: '找不到這則留言' };
+  cell.comments[idx] = Object.assign({}, cell.comments[idx], data);
+  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(cell.comments));
   return { success: true };
 }
 
 function deleteComment(id, commentId) {
   const cell = getCommentsCell(id);
   if (!cell) return { success: false, error: '找不到這筆資料（可能已被刪除）' };
-  const comments = cell.comments.filter(function (c) { return c.id !== commentId; });
-  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(comments));
+  const idx = resolveCommentIndex(cell.comments, commentId);
+  if (idx < 0 || idx >= cell.comments.length) return { success: false, error: '找不到這則留言' };
+  cell.comments.splice(idx, 1);
+  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(cell.comments));
   return { success: true };
 }
 

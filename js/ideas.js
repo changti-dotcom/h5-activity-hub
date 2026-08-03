@@ -152,8 +152,13 @@ async function handleAddComment(idea, form) {
   }
 }
 
+function findCommentByKey(comments, commentId) {
+  if (commentId.startsWith('idx_')) return comments[Number(commentId.slice(4))];
+  return comments.find((c) => c.id === commentId);
+}
+
 function startEditComment(idea, commentId) {
-  const comment = (idea.comments || []).find((c) => c.id === commentId);
+  const comment = findCommentByKey(idea.comments || [], commentId);
   if (!comment) return;
   const item = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
   if (!item) return;

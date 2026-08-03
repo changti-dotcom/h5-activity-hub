@@ -177,11 +177,23 @@ async function addComment(id, comment) {
   return updateIdea(id, { comments });
 }
 
+// 這個功能上線前留下的舊留言沒有 id，前端會改用陣列位置當識別碼（格式 "idx_數字"），
+// 這裡統一還原成實際的陣列索引，讓編輯/刪除對新舊留言都能用。
+function resolveCommentIndex(comments, commentId) {
+  if (typeof commentId === 'string' && commentId.startsWith('idx_')) {
+    return Number(commentId.slice(4));
+  }
+  return comments.findIndex((c) => c.id === commentId);
+}
+
 async function updateComment(ideaId, commentId, data) {
   const all = await fetchIdeas();
   const idea = all.find((i) => i.id === ideaId);
   if (!idea) return { success: false, error: '找不到這筆點子' };
-  const comments = (idea.comments || []).map((c) => (c.id === commentId ? { ...c, ...data } : c));
+  const comments = [...(idea.comments || [])];
+  const idx = resolveCommentIndex(comments, commentId);
+  if (idx < 0 || idx >= comments.length) return { success: false, error: '找不到這則留言' };
+  comments[idx] = { ...comments[idx], ...data };
   return updateIdea(ideaId, { comments });
 }
 
@@ -189,6 +201,9 @@ async function deleteComment(ideaId, commentId) {
   const all = await fetchIdeas();
   const idea = all.find((i) => i.id === ideaId);
   if (!idea) return { success: false, error: '找不到這筆點子' };
-  const comments = (idea.comments || []).filter((c) => c.id !== commentId);
+  const comments = [...(idea.comments || [])];
+  const idx = resolveCommentIndex(comments, commentId);
+  if (idx < 0 || idx >= comments.length) return { success: false, error: '找不到這則留言' };
+  comments.splice(idx, 1);
   return updateIdea(ideaId, { comments });
 }

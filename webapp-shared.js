@@ -97,16 +97,18 @@ function commentsListHtml(comments) {
   if (!comments || !comments.length) {
     return '<div class="value" style="color:var(--color-text-muted);">還沒有人留言，第一個留言分享想法吧！</div>';
   }
-  return '<div class="comment-list">' + comments.map(function (c) {
+  // 這個功能上線前留下的舊留言可能沒有 id，用陣列位置當備援識別碼，
+  // 讓編輯/刪除對所有留言都能用，不會只有新留言才有這兩個按鈕。
+  return '<div class="comment-list">' + comments.map(function (c, i) {
+    var key = c.id || ('idx_' + i);
     return '' +
-      '<div class="comment-item" data-comment-id="' + escapeHtml(c.id || '') + '">' +
+      '<div class="comment-item" data-comment-id="' + escapeHtml(key) + '">' +
         '<div class="comment-head"><strong>' + escapeHtml(c.author || '匿名') + '</strong><span>' + formatDateShort(c.createdAt) + '</span></div>' +
         '<div class="comment-text">' + escapeHtml(c.text) + '</div>' +
-        (c.id ?
-          '<div class="comment-actions">' +
-            '<button type="button" class="comment-edit-btn" data-comment-id="' + escapeHtml(c.id) + '">✏️ 編輯</button>' +
-            '<button type="button" class="comment-delete-btn" data-comment-id="' + escapeHtml(c.id) + '">🗑️ 刪除</button>' +
-          '</div>' : '') +
+        '<div class="comment-actions">' +
+          '<button type="button" class="comment-edit-btn" data-comment-id="' + escapeHtml(key) + '">✏️ 編輯</button>' +
+          '<button type="button" class="comment-delete-btn" data-comment-id="' + escapeHtml(key) + '">🗑️ 刪除</button>' +
+        '</div>' +
       '</div>';
   }).join('') + '</div>';
 }
@@ -501,8 +503,13 @@ function initIdeas() {
     });
   }
 
+  function findCommentByKey(comments, commentId) {
+    if (commentId.indexOf('idx_') === 0) return comments[Number(commentId.slice(4))];
+    return comments.find(function (c) { return c.id === commentId; });
+  }
+
   function startEditComment(idea, commentId) {
-    var comment = (idea.comments || []).find(function (c) { return c.id === commentId; });
+    var comment = findCommentByKey(idea.comments || [], commentId);
     if (!comment) return;
     var item = document.querySelector('.comment-item[data-comment-id="' + commentId + '"]');
     if (!item) return;
