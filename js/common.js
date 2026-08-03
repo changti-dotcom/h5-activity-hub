@@ -87,9 +87,10 @@ function commentsListHtml(comments) {
     .join('')}</div>`;
 }
 
-function demoLinkHtml(demoUrl) {
+function demoLinkHtml(demoUrl, ideaType) {
   if (!demoUrl) return '';
-  return `<a href="${escapeHtml(demoUrl)}" target="_blank" rel="noopener" class="demo-link">▶ 開啟 Demo 網頁</a>`;
+  const label = ideaType === 'hotspot' ? '🔗 查看補充資料' : '▶ 開啟 Demo 網頁';
+  return `<a href="${escapeHtml(demoUrl)}" target="_blank" rel="noopener" class="demo-link">${label}</a>`;
 }
 
 function attachmentListHtml(attachments) {
@@ -230,7 +231,7 @@ function ideaCardHtml(idea) {
       <div class="tag-row">
         ${ideaTypeBadgeHtml(idea.ideaType)}
         ${(idea.purposeTags || []).map((t) => tagChip(t, 'purpose')).join('')}
-        ${idea.demoUrl ? `<span class="demo-badge">🎮 有 Demo</span>` : ''}
+        ${idea.demoUrl ? `<span class="demo-badge">${idea.ideaType === 'hotspot' ? '📎 有補充資料' : '🎮 有 Demo'}</span>` : ''}
       </div>
       <div class="footer-row">
         <span class="author-badge">
@@ -255,15 +256,16 @@ function renderIdeaDetailModal(idea, opts) {
       提供 · ${formatDateShort(idea.createdAt)}
     </div>
 
+    ${(idea.ideaType !== 'hotspot' || (idea.images && idea.images.length)) ? `
     <div class="detail-section">
       <div class="label">示意圖／Demo 照片</div>
       ${photoGalleryHtml(idea.images)}
-    </div>
+    </div>` : ''}
 
-    ${idea.demoUrl ? `<div class="detail-section"><div class="label">互動 Demo</div>${demoLinkHtml(idea.demoUrl)}</div>` : ''}
+    ${idea.demoUrl ? `<div class="detail-section"><div class="label">${idea.ideaType === 'hotspot' ? '其他補充資料' : '互動 Demo'}</div>${demoLinkHtml(idea.demoUrl, idea.ideaType)}</div>` : ''}
 
     <div class="detail-section">
-      <div class="label">詳細說明</div>
+      <div class="label">${idea.ideaType === 'hotspot' ? '活動說明' : '詳細說明'}</div>
       <div class="value">${escapeHtml(idea.description)}</div>
     </div>
 

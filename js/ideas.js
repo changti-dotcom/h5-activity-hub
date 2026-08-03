@@ -204,9 +204,33 @@ async function handleDeleteComment(idea, commentId) {
   }
 }
 
+// 活動中心不是做小遊戲，是條件兌換機制，所以「詳細說明」「Demo 網頁連結」這兩個欄位
+// 換成對應的標籤／提示／預留文字；附件（工單）跟示意圖照片是 H5 專用，活動中心不需要，
+// 「Demo 網頁連結」在活動中心底下直接兼作「其他補充資料」的單一連結欄位使用。
 function setIdeaTypeUi(type) {
-  const attachmentsGroup = document.getElementById('attachmentsFieldGroup');
-  attachmentsGroup.style.display = type === 'hotspot' ? 'none' : '';
+  const isHotspot = type === 'hotspot';
+  document.getElementById('attachmentsFieldGroup').style.display = isHotspot ? 'none' : '';
+  document.getElementById('imageUrlFieldGroup').style.display = isHotspot ? 'none' : '';
+
+  const descLabelText = document.getElementById('descriptionLabelText');
+  const descHint = document.getElementById('descriptionHint');
+  const descInput = document.getElementById('descriptionInput');
+  const demoLabelText = document.getElementById('demoUrlLabelText');
+  const demoHint = document.getElementById('demoUrlHint');
+
+  if (isHotspot) {
+    descLabelText.textContent = '活動說明';
+    descHint.textContent = '選填，例如可以連結哪個英雄、條件兌換機制怎麼設計等等';
+    descInput.placeholder = '例：搭配哪個英雄／IP、玩家要完成什麼條件才能兌換什麼獎勵（活動中心是條件兌換機制，不是遊戲玩法）';
+    demoLabelText.textContent = '其他補充資料';
+    demoHint.textContent = '選填，示意圖、參考文件、活動企劃連結等都可以，貼一個連結就好';
+  } else {
+    descLabelText.textContent = '詳細說明';
+    descHint.textContent = '選填，先丟出來就好，之後想到再補充也可以';
+    descInput.placeholder = '玩法怎麼玩？為什麼覺得會吸引玩家？（沒想清楚也沒關係，先寫個大概）';
+    demoLabelText.textContent = 'Demo 網頁連結';
+    demoHint.textContent = '選填，如果已經做好可以直接玩的 HTML Demo 網頁，貼連結讓大家玩玩看，要不要放完全自由';
+  }
 }
 
 function openAddOrEditModal(idea) {

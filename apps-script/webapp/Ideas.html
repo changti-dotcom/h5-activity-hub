@@ -72,8 +72,8 @@
         <input type="text" name="title" required placeholder="一句話說明這個點子">
       </div>
       <div class="form-group">
-        <label>詳細說明 <span class="hint">選填，先丟出來就好，之後想到再補充也可以</span></label>
-        <textarea name="description" placeholder="玩法怎麼玩？為什麼覺得會吸引玩家？（沒想清楚也沒關係，先寫個大概）"></textarea>
+        <label><span id="descriptionLabelText">詳細說明</span> <span class="hint" id="descriptionHint">選填，先丟出來就好，之後想到再補充也可以</span></label>
+        <textarea name="description" id="descriptionInput" placeholder="玩法怎麼玩？為什麼覺得會吸引玩家？（沒想清楚也沒關係，先寫個大概）"></textarea>
       </div>
       <div class="form-group">
         <label>提供者 <span class="hint">必填，會顯示在點子卡片上</span></label>
@@ -83,12 +83,12 @@
         <label>時事議題／時事梗 <span class="hint">選填，H5、活動中心活動都可以填，寫下想結合的時事話題或梗</span></label>
         <input type="text" name="topicRef" placeholder="例：最近很紅的某某話題、某個梗圖">
       </div>
-      <div class="form-group">
+      <div class="form-group" id="imageUrlFieldGroup">
         <label>示意圖／Demo 照片 <span class="hint">選填，目前還沒有上傳功能，先貼圖片連結即可（例如 Google Drive 開啟「知道連結的人可查看」後的分享連結、內部圖床等）</span></label>
         <input type="text" name="imageUrl" placeholder="https://drive.google.com/...">
       </div>
       <div class="form-group">
-        <label>Demo 網頁連結 <span class="hint">選填，如果已經做好可以直接玩的 HTML Demo 網頁，貼連結讓大家玩玩看，要不要放完全自由</span></label>
+        <label><span id="demoUrlLabelText">Demo 網頁連結</span> <span class="hint" id="demoUrlHint">選填，如果已經做好可以直接玩的 HTML Demo 網頁，貼連結讓大家玩玩看，要不要放完全自由</span></label>
         <input type="text" name="demoUrl" placeholder="https://…">
       </div>
       <div class="form-group" id="attachmentsFieldGroup">

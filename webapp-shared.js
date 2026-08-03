@@ -76,9 +76,10 @@ function normalizeImageUrl(url) {
   return fileId ? 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1000' : trimmed;
 }
 
-function demoLinkHtml(demoUrl) {
+function demoLinkHtml(demoUrl, ideaType) {
   if (!demoUrl) return '';
-  return '<a href="' + escapeHtml(demoUrl) + '" target="_blank" rel="noopener" class="demo-link">▶ 開啟 Demo 網頁</a>';
+  var label = ideaType === 'hotspot' ? '🔗 查看補充資料' : '▶ 開啟 Demo 網頁';
+  return '<a href="' + escapeHtml(demoUrl) + '" target="_blank" rel="noopener" class="demo-link">' + label + '</a>';
 }
 
 function attachmentListHtml(attachments) {
@@ -198,7 +199,7 @@ function ideaCardHtml(idea) {
       '<div class="tag-row">' +
         ideaTypeBadgeHtml(idea.ideaType) +
         (idea.purposeTags || []).map(function (t) { return tagChip(t, 'purpose'); }).join('') +
-        (idea.demoUrl ? '<span class="demo-badge">🎮 有 Demo</span>' : '') +
+        (idea.demoUrl ? '<span class="demo-badge">' + (idea.ideaType === 'hotspot' ? '📎 有補充資料' : '🎮 有 Demo') + '</span>' : '') +
       '</div>' +
       '<div class="footer-row">' +
         '<span class="author-badge">' +
@@ -221,9 +222,9 @@ function renderIdeaDetailModal(idea, opts) {
       '<span class="author-badge"><span class="avatar-circle">' + escapeHtml(initialsOf(idea.submittedBy)) + '</span>' + escapeHtml(idea.submittedBy || '匿名') + '</span>' +
       ' 提供 · ' + formatDateShort(idea.createdAt) +
     '</div>' +
-    '<div class="detail-section"><div class="label">示意圖／Demo 照片</div>' + photoGalleryHtml(idea.images) + '</div>' +
-    (idea.demoUrl ? '<div class="detail-section"><div class="label">互動 Demo</div>' + demoLinkHtml(idea.demoUrl) + '</div>' : '') +
-    '<div class="detail-section"><div class="label">詳細說明</div><div class="value">' + escapeHtml(idea.description) + '</div></div>' +
+    ((idea.ideaType !== 'hotspot' || (idea.images && idea.images.length)) ? '<div class="detail-section"><div class="label">示意圖／Demo 照片</div>' + photoGalleryHtml(idea.images) + '</div>' : '') +
+    (idea.demoUrl ? '<div class="detail-section"><div class="label">' + (idea.ideaType === 'hotspot' ? '其他補充資料' : '互動 Demo') + '</div>' + demoLinkHtml(idea.demoUrl, idea.ideaType) + '</div>' : '') +
+    '<div class="detail-section"><div class="label">' + (idea.ideaType === 'hotspot' ? '活動說明' : '詳細說明') + '</div><div class="value">' + escapeHtml(idea.description) + '</div></div>' +
     (idea.topicRef ? '<div class="detail-section"><div class="label">時事議題／時事梗</div><div class="value">' + escapeHtml(idea.topicRef) + '</div></div>' : '') +
     '<div class="detail-section"><div class="label">設計目的</div>' + purposeTagsOrTodo(idea.purposeTags) + '</div>' +
     (idea.inspirationRef ? '<div class="detail-section"><div class="label">參考／靈感來源</div><div class="value">' + escapeHtml(idea.inspirationRef) + '</div></div>' : '') +
@@ -548,9 +549,33 @@ function initIdeas() {
     });
   }
 
+  // 活動中心不是做小遊戲，是條件兌換機制，所以「詳細說明」「Demo 網頁連結」這兩個欄位
+  // 換成對應的標籤／提示／預留文字；附件（工單）跟示意圖照片是 H5 專用，活動中心不需要，
+  // 「Demo 網頁連結」在活動中心底下直接兼作「其他補充資料」的單一連結欄位使用。
   function setIdeaTypeUi(type) {
-    var group = document.getElementById('attachmentsFieldGroup');
-    group.style.display = type === 'hotspot' ? 'none' : '';
+    var isHotspot = type === 'hotspot';
+    document.getElementById('attachmentsFieldGroup').style.display = isHotspot ? 'none' : '';
+    document.getElementById('imageUrlFieldGroup').style.display = isHotspot ? 'none' : '';
+
+    var descLabelText = document.getElementById('descriptionLabelText');
+    var descHint = document.getElementById('descriptionHint');
+    var descInput = document.getElementById('descriptionInput');
+    var demoLabelText = document.getElementById('demoUrlLabelText');
+    var demoHint = document.getElementById('demoUrlHint');
+
+    if (isHotspot) {
+      descLabelText.textContent = '活動說明';
+      descHint.textContent = '選填，例如可以連結哪個英雄、條件兌換機制怎麼設計等等';
+      descInput.placeholder = '例：搭配哪個英雄／IP、玩家要完成什麼條件才能兌換什麼獎勵（活動中心是條件兌換機制，不是遊戲玩法）';
+      demoLabelText.textContent = '其他補充資料';
+      demoHint.textContent = '選填，示意圖、參考文件、活動企劃連結等都可以，貼一個連結就好';
+    } else {
+      descLabelText.textContent = '詳細說明';
+      descHint.textContent = '選填，先丟出來就好，之後想到再補充也可以';
+      descInput.placeholder = '玩法怎麼玩？為什麼覺得會吸引玩家？（沒想清楚也沒關係，先寫個大概）';
+      demoLabelText.textContent = 'Demo 網頁連結';
+      demoHint.textContent = '選填，如果已經做好可以直接玩的 HTML Demo 網頁，貼連結讓大家玩玩看，要不要放完全自由';
+    }
   }
 
   function openAddOrEditModal(idea) {
