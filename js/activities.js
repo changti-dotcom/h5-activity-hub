@@ -159,6 +159,8 @@ function openAddOrEditActivityModal(activity) {
   form.referenceLink.value = activity ? activity.referenceLink || '' : '';
   form.images.value = activity && activity.images && activity.images.length ? activity.images.join('\n') : '';
   form.createdBy.value = activity ? activity.createdBy || '' : '';
+  form.visitRate.value = activity && activity.metrics && activity.metrics.visitRate != null ? activity.metrics.visitRate : '';
+  form.completionRate.value = activity && activity.metrics && activity.metrics.completionRate != null ? activity.metrics.completionRate : '';
   renderChipSelect(document.getElementById('formMechanismTags'), MECHANISM_TAGS, activity ? activity.mechanismTags || [] : []);
   renderChipSelect(document.getElementById('formPurposeTags'), ACTIVITY_PURPOSE_TAGS, activity ? activity.purposeTags || [] : []);
   renderChipSelect(document.getElementById('formSpecialTags'), SPECIAL_TAG_SUGGESTIONS, activity ? activity.specialTags || [] : []);
@@ -186,8 +188,17 @@ document.getElementById('addActivityForm').addEventListener('submit', async (e) 
       .filter(Boolean),
     createdBy: form.createdBy.value.trim() || '匿名',
   };
-  // 新增時預設沒有成效數據；編輯時不能覆蓋掉既有的 metrics（表單本來就沒有這個欄位可以填）
-  if (!editingActivityId) data.metrics = null;
+  // 有填參與率／完成率其中之一才組成 metrics；兩個都空的話，新增就是「還沒有成效數據」（null），
+  // 編輯則乾脆不帶 metrics 這個欄位，讓既有資料（不管是這個格式還是舊格式）維持原樣不被蓋掉。
+  const visitRateVal = form.visitRate.value.trim();
+  const completionRateVal = form.completionRate.value.trim();
+  if (visitRateVal !== '' || completionRateVal !== '') {
+    data.metrics = {};
+    if (visitRateVal !== '') data.metrics.visitRate = Number(visitRateVal);
+    if (completionRateVal !== '') data.metrics.completionRate = Number(completionRateVal);
+  } else if (!editingActivityId) {
+    data.metrics = null;
+  }
   if (!data.name || !data.mechanism) return;
 
   const result = editingActivityId ? await updateActivity(editingActivityId, data) : await submitActivity(data);
