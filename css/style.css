@@ -463,7 +463,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 13.5px;
 }
 
-.like-btn.liked { background: var(--color-gold); color: var(--color-navy); border-color: var(--color-gold); cursor: default; }
+.like-btn.liked { background: var(--color-gold); color: var(--color-navy); border-color: var(--color-gold); }
 
 .comment-list { display: flex; flex-direction: column; gap: 10px; }
 .comment-item {
@@ -476,6 +476,17 @@ a { color: inherit; text-decoration: none; }
 .comment-head strong { color: var(--color-text); }
 .comment-head span { color: var(--color-text-muted); }
 .comment-text { font-size: 13.5px; white-space: pre-line; }
+.comment-actions { display: flex; gap: 14px; margin-top: 6px; }
+.comment-actions button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+.comment-actions button:hover { color: var(--color-gold); }
 
 /* ---------- Form ---------- */
 .form-group { margin-bottom: 16px; }

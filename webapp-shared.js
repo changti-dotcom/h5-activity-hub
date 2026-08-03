@@ -99,9 +99,14 @@ function commentsListHtml(comments) {
   }
   return '<div class="comment-list">' + comments.map(function (c) {
     return '' +
-      '<div class="comment-item">' +
+      '<div class="comment-item" data-comment-id="' + escapeHtml(c.id || '') + '">' +
         '<div class="comment-head"><strong>' + escapeHtml(c.author || '匿名') + '</strong><span>' + formatDateShort(c.createdAt) + '</span></div>' +
         '<div class="comment-text">' + escapeHtml(c.text) + '</div>' +
+        (c.id ?
+          '<div class="comment-actions">' +
+            '<button type="button" class="comment-edit-btn" data-comment-id="' + escapeHtml(c.id) + '">✏️ 編輯</button>' +
+            '<button type="button" class="comment-delete-btn" data-comment-id="' + escapeHtml(c.id) + '">🗑️ 刪除</button>' +
+          '</div>' : '') +
       '</div>';
   }).join('') + '</div>';
 }
@@ -266,7 +271,10 @@ function submitIdea(data) { return callServer('addIdeaForClient', data); }
 function updateIdea(id, data) { return callServer('updateIdeaForClient', Object.assign({ id: id }, data)); }
 function deleteIdea(id) { return callServer('deleteIdeaForClient', id); }
 function likeIdea(id) { return callServer('likeIdeaForClient', id); }
+function unlikeIdea(id) { return callServer('unlikeIdeaForClient', id); }
 function addComment(id, comment) { return callServer('addCommentForClient', Object.assign({ id: id }, comment)); }
+function updateComment(id, commentId, data) { return callServer('updateCommentForClient', Object.assign({ id: id, commentId: commentId }, data)); }
+function deleteComment(id, commentId) { return callServer('deleteCommentForClient', { id: id, commentId: commentId }); }
 
 // ============================================================================
 // 各頁面邏輯
@@ -361,6 +369,11 @@ function initIdeas() {
     liked.add(id);
     localStorage.setItem(LIKED_KEY, JSON.stringify(Array.from(liked)));
   }
+  function unmarkLiked(id) {
+    var liked = getLikedIds();
+    liked.delete(id);
+    localStorage.setItem(LIKED_KEY, JSON.stringify(Array.from(liked)));
+  }
 
   function buildFilterChips(containerId, tags, filterKey) {
     var container = document.getElementById(containerId);
@@ -414,6 +427,18 @@ function initIdeas() {
     });
   }
 
+  function updateLikeButtonUi(btn, idea) {
+    var liked = getLikedIds().has(idea.id);
+    btn.classList.toggle('liked', liked);
+    btn.textContent = liked ? '👍 已按讚（' + (idea.likes || 0) + '）' : '👍 按讚（' + (idea.likes || 0) + '）';
+  }
+
+  function refreshDetailModal(ideaId, fallbackIdea) {
+    var updated = ALL_IDEAS.find(function (x) { return x.id === ideaId; }) || fallbackIdea;
+    renderIdeaDetailModal(updated, { manageActions: true });
+    wireDetailActions(updated);
+  }
+
   function wireDetailActions(idea) {
     var box = document.getElementById('detailModalBox');
     var editBtn = box.querySelector('.manage-edit-btn');
@@ -425,13 +450,8 @@ function initIdeas() {
     if (deleteBtn) deleteBtn.addEventListener('click', function () { handleDeleteIdea(idea); });
 
     if (likeBtn) {
-      if (getLikedIds().has(idea.id)) {
-        likeBtn.disabled = true;
-        likeBtn.classList.add('liked');
-        likeBtn.textContent = '👍 已按讚（' + (idea.likes || 0) + '）';
-      } else {
-        likeBtn.addEventListener('click', function () { handleLike(idea); });
-      }
+      updateLikeButtonUi(likeBtn, idea);
+      likeBtn.addEventListener('click', function () { handleToggleLike(idea); });
     }
 
     if (commentForm) {
@@ -440,6 +460,13 @@ function initIdeas() {
         handleAddComment(idea, commentForm);
       });
     }
+
+    box.querySelectorAll('.comment-edit-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { startEditComment(idea, btn.dataset.commentId); });
+    });
+    box.querySelectorAll('.comment-delete-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { handleDeleteComment(idea, btn.dataset.commentId); });
+    });
   }
 
   function openDetail(id) {
@@ -449,17 +476,15 @@ function initIdeas() {
     wireDetailActions(idea);
   }
 
-  function handleLike(idea) {
-    likeIdea(idea.id).then(function (result) {
+  function handleToggleLike(idea) {
+    var liked = getLikedIds().has(idea.id);
+    var op = liked ? unlikeIdea(idea.id) : likeIdea(idea.id);
+    op.then(function (result) {
       if (result && result.success) {
-        markLiked(idea.id);
-        return reloadIdeas().then(function () {
-          var updated = ALL_IDEAS.find(function (x) { return x.id === idea.id; }) || idea;
-          renderIdeaDetailModal(updated, { manageActions: true });
-          wireDetailActions(updated);
-        });
+        if (liked) unmarkLiked(idea.id); else markLiked(idea.id);
+        return reloadIdeas().then(function () { refreshDetailModal(idea.id, idea); });
       }
-      toast('按讚失敗，請稍後再試');
+      toast('操作失敗，請稍後再試');
     });
   }
 
@@ -470,13 +495,49 @@ function initIdeas() {
     addComment(idea.id, { author: author, text: text }).then(function (result) {
       if (result && result.success) {
         toast('留言送出！');
-        return reloadIdeas().then(function () {
-          var updated = ALL_IDEAS.find(function (x) { return x.id === idea.id; }) || idea;
-          renderIdeaDetailModal(updated, { manageActions: true });
-          wireDetailActions(updated);
-        });
+        return reloadIdeas().then(function () { refreshDetailModal(idea.id, idea); });
       }
       toast('留言失敗，請稍後再試');
+    });
+  }
+
+  function startEditComment(idea, commentId) {
+    var comment = (idea.comments || []).find(function (c) { return c.id === commentId; });
+    if (!comment) return;
+    var item = document.querySelector('.comment-item[data-comment-id="' + commentId + '"]');
+    if (!item) return;
+    item.innerHTML = '' +
+      '<div class="form-group" style="margin-bottom:8px;"><input type="text" class="edit-comment-author" value="' + escapeHtml(comment.author || '') + '"></div>' +
+      '<div class="form-group" style="margin-bottom:8px;"><textarea class="edit-comment-text" style="min-height:60px;">' + escapeHtml(comment.text || '') + '</textarea></div>' +
+      '<div class="form-actions" style="margin-top:0;">' +
+        '<button type="button" class="btn btn-outline btn-sm cancel-edit-comment-btn">取消</button>' +
+        '<button type="button" class="btn btn-primary btn-sm save-edit-comment-btn">儲存</button>' +
+      '</div>';
+    item.querySelector('.cancel-edit-comment-btn').addEventListener('click', function () { refreshDetailModal(idea.id, idea); });
+    item.querySelector('.save-edit-comment-btn').addEventListener('click', function () { saveEditComment(idea, commentId, item); });
+  }
+
+  function saveEditComment(idea, commentId, item) {
+    var author = item.querySelector('.edit-comment-author').value.trim();
+    var text = item.querySelector('.edit-comment-text').value.trim();
+    if (!author || !text) return;
+    updateComment(idea.id, commentId, { author: author, text: text }).then(function (result) {
+      if (result && result.success) {
+        toast('留言已更新');
+        return reloadIdeas().then(function () { refreshDetailModal(idea.id, idea); });
+      }
+      toast('更新失敗，請稍後再試');
+    });
+  }
+
+  function handleDeleteComment(idea, commentId) {
+    if (!confirm('確定要刪除這則留言嗎？')) return;
+    deleteComment(idea.id, commentId).then(function (result) {
+      if (result && result.success) {
+        toast('留言已刪除');
+        return reloadIdeas().then(function () { refreshDetailModal(idea.id, idea); });
+      }
+      toast('刪除失敗，請稍後再試');
     });
   }
 

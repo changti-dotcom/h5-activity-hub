@@ -157,10 +157,38 @@ async function likeIdea(id) {
   return updateIdea(id, { likes: (idea.likes || 0) + 1 });
 }
 
+async function unlikeIdea(id) {
+  const all = await fetchIdeas();
+  const idea = all.find((i) => i.id === id);
+  if (!idea) return { success: false, error: '找不到這筆點子' };
+  return updateIdea(id, { likes: Math.max(0, (idea.likes || 0) - 1) });
+}
+
 async function addComment(id, comment) {
   const all = await fetchIdeas();
   const idea = all.find((i) => i.id === id);
   if (!idea) return { success: false, error: '找不到這筆點子' };
-  const comments = [...(idea.comments || []), { ...comment, createdAt: new Date().toISOString() }];
+  const newComment = {
+    id: 'c_' + new Date().getTime() + '_' + Math.floor(Math.random() * 1e6),
+    ...comment,
+    createdAt: new Date().toISOString(),
+  };
+  const comments = [...(idea.comments || []), newComment];
   return updateIdea(id, { comments });
+}
+
+async function updateComment(ideaId, commentId, data) {
+  const all = await fetchIdeas();
+  const idea = all.find((i) => i.id === ideaId);
+  if (!idea) return { success: false, error: '找不到這筆點子' };
+  const comments = (idea.comments || []).map((c) => (c.id === commentId ? { ...c, ...data } : c));
+  return updateIdea(ideaId, { comments });
+}
+
+async function deleteComment(ideaId, commentId) {
+  const all = await fetchIdeas();
+  const idea = all.find((i) => i.id === ideaId);
+  if (!idea) return { success: false, error: '找不到這筆點子' };
+  const comments = (idea.comments || []).filter((c) => c.id !== commentId);
+  return updateIdea(ideaId, { comments });
 }

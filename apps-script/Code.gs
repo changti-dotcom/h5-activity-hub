@@ -84,8 +84,20 @@ function likeIdeaForClient(id) {
   return likeIdea(id);
 }
 
+function unlikeIdeaForClient(id) {
+  return unlikeIdea(id);
+}
+
 function addCommentForClient(payload) {
   return addComment(payload.id, { author: payload.author, text: payload.text });
+}
+
+function updateCommentForClient(payload) {
+  return updateComment(payload.id, payload.commentId, { author: payload.author, text: payload.text });
+}
+
+function deleteCommentForClient(payload) {
+  return deleteComment(payload.id, payload.commentId);
 }
 
 function doPost(e) {
@@ -95,7 +107,10 @@ function doPost(e) {
   if (body.action === 'updateIdea') return respond(updateIdea(data.id, data));
   if (body.action === 'deleteIdea') return respond(deleteIdea(data.id));
   if (body.action === 'likeIdea') return respond(likeIdea(data.id));
+  if (body.action === 'unlikeIdea') return respond(unlikeIdea(data.id));
   if (body.action === 'addComment') return respond(addComment(data.id, { author: data.author, text: data.text }));
+  if (body.action === 'updateComment') return respond(updateComment(data.id, data.commentId, { author: data.author, text: data.text }));
+  if (body.action === 'deleteComment') return respond(deleteComment(data.id, data.commentId));
   if (body.action === 'addActivity') return respond(addActivity(data));
   return respond({ error: 'unknown action: ' + body.action });
 }
@@ -283,9 +298,24 @@ function likeIdea(id) {
   return { success: true, likes: next };
 }
 
-function addComment(id, comment) {
+function unlikeIdea(id) {
   const sheetName = findIdeaSheetName(id);
   if (!sheetName) return { success: false, error: '找不到這筆資料（可能已被刪除）' };
+  const sheet = getOrCreateSheet(sheetName, IDEAS_HEADERS);
+  const actualHeaders = getActualHeaders(sheet);
+  const rowIndex = findRowIndexById(sheet, id);
+  const col = actualHeaders.indexOf('likes') + 1;
+  const current = Number(sheet.getRange(rowIndex, col).getValue()) || 0;
+  const next = Math.max(0, current - 1);
+  sheet.getRange(rowIndex, col).setValue(next);
+  return { success: true, likes: next };
+}
+
+// 取出某個 id 那一列目前的留言陣列，連同「這格在哪個分頁的哪一欄」一起回傳，
+// 方便 addComment/updateComment/deleteComment 共用同一套讀寫邏輯。
+function getCommentsCell(id) {
+  const sheetName = findIdeaSheetName(id);
+  if (!sheetName) return null;
   const sheet = getOrCreateSheet(sheetName, IDEAS_HEADERS);
   const actualHeaders = getActualHeaders(sheet);
   const rowIndex = findRowIndexById(sheet, id);
@@ -293,8 +323,37 @@ function addComment(id, comment) {
   const raw = sheet.getRange(rowIndex, col).getValue();
   let comments = [];
   try { comments = raw ? JSON.parse(raw) : []; } catch (e) { comments = []; }
-  comments.push({ author: comment.author || '匿名', text: comment.text || '', createdAt: new Date().toISOString() });
-  sheet.getRange(rowIndex, col).setValue(JSON.stringify(comments));
+  return { sheet: sheet, row: rowIndex, col: col, comments: comments };
+}
+
+function addComment(id, comment) {
+  const cell = getCommentsCell(id);
+  if (!cell) return { success: false, error: '找不到這筆資料（可能已被刪除）' };
+  cell.comments.push({
+    id: 'c_' + new Date().getTime() + '_' + Math.floor(Math.random() * 1e6),
+    author: comment.author || '匿名',
+    text: comment.text || '',
+    createdAt: new Date().toISOString(),
+  });
+  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(cell.comments));
+  return { success: true };
+}
+
+function updateComment(id, commentId, data) {
+  const cell = getCommentsCell(id);
+  if (!cell) return { success: false, error: '找不到這筆資料（可能已被刪除）' };
+  const comments = cell.comments.map(function (c) {
+    return c.id === commentId ? Object.assign({}, c, data) : c;
+  });
+  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(comments));
+  return { success: true };
+}
+
+function deleteComment(id, commentId) {
+  const cell = getCommentsCell(id);
+  if (!cell) return { success: false, error: '找不到這筆資料（可能已被刪除）' };
+  const comments = cell.comments.filter(function (c) { return c.id !== commentId; });
+  cell.sheet.getRange(cell.row, cell.col).setValue(JSON.stringify(comments));
   return { success: true };
 }
 

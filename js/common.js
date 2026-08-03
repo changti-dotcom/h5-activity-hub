@@ -72,9 +72,14 @@ function commentsListHtml(comments) {
   return `<div class="comment-list">${comments
     .map(
       (c) => `
-    <div class="comment-item">
+    <div class="comment-item" data-comment-id="${escapeHtml(c.id || '')}">
       <div class="comment-head"><strong>${escapeHtml(c.author || '匿名')}</strong><span>${formatDateShort(c.createdAt)}</span></div>
       <div class="comment-text">${escapeHtml(c.text)}</div>
+      ${c.id ? `
+      <div class="comment-actions">
+        <button type="button" class="comment-edit-btn" data-comment-id="${escapeHtml(c.id)}">✏️ 編輯</button>
+        <button type="button" class="comment-delete-btn" data-comment-id="${escapeHtml(c.id)}">🗑️ 刪除</button>
+      </div>` : ''}
     </div>`
     )
     .join('')}</div>`;

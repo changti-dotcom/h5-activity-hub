@@ -20,6 +20,12 @@ function markIdeaLiked(id) {
   writeLocal(LIKED_IDEAS_KEY, [...liked]);
 }
 
+function unmarkIdeaLiked(id) {
+  const liked = getLikedIdeaIds();
+  liked.delete(id);
+  writeLocal(LIKED_IDEAS_KEY, [...liked]);
+}
+
 function buildFilterChips(containerId, tags, filterKey) {
   const container = document.getElementById(containerId);
   container.innerHTML = tags
@@ -81,13 +87,8 @@ function wireDetailModalActions(idea) {
   if (deleteBtn) deleteBtn.addEventListener('click', () => handleDeleteIdea(idea));
 
   if (likeBtn) {
-    if (getLikedIdeaIds().has(idea.id)) {
-      likeBtn.disabled = true;
-      likeBtn.classList.add('liked');
-      likeBtn.textContent = `👍 已按讚（${idea.likes || 0}）`;
-    } else {
-      likeBtn.addEventListener('click', () => handleLikeIdea(idea));
-    }
+    updateLikeButtonUi(likeBtn, idea);
+    likeBtn.addEventListener('click', () => handleToggleLike(idea));
   }
 
   if (commentForm) {
@@ -96,6 +97,25 @@ function wireDetailModalActions(idea) {
       handleAddComment(idea, commentForm);
     });
   }
+
+  box.querySelectorAll('.comment-edit-btn').forEach((btn) => {
+    btn.addEventListener('click', () => startEditComment(idea, btn.dataset.commentId));
+  });
+  box.querySelectorAll('.comment-delete-btn').forEach((btn) => {
+    btn.addEventListener('click', () => handleDeleteComment(idea, btn.dataset.commentId));
+  });
+}
+
+function updateLikeButtonUi(btn, idea) {
+  const liked = getLikedIdeaIds().has(idea.id);
+  btn.classList.toggle('liked', liked);
+  btn.textContent = liked ? `👍 已按讚（${idea.likes || 0}）` : `👍 按讚（${idea.likes || 0}）`;
+}
+
+function refreshDetailModal(ideaId, fallbackIdea) {
+  const updated = ALL_IDEAS.find((x) => x.id === ideaId) || fallbackIdea;
+  renderIdeaDetailModal(updated, { manageActions: true });
+  wireDetailModalActions(updated);
 }
 
 function openDetail(id) {
@@ -105,16 +125,16 @@ function openDetail(id) {
   wireDetailModalActions(idea);
 }
 
-async function handleLikeIdea(idea) {
-  const result = await likeIdea(idea.id);
+async function handleToggleLike(idea) {
+  const liked = getLikedIdeaIds().has(idea.id);
+  const result = liked ? await unlikeIdea(idea.id) : await likeIdea(idea.id);
   if (result && result.success) {
-    markIdeaLiked(idea.id);
+    if (liked) unmarkIdeaLiked(idea.id);
+    else markIdeaLiked(idea.id);
     await reloadIdeas();
-    const updated = ALL_IDEAS.find((x) => x.id === idea.id) || idea;
-    renderIdeaDetailModal(updated, { manageActions: true });
-    wireDetailModalActions(updated);
+    refreshDetailModal(idea.id, idea);
   } else {
-    toast('按讚失敗，請稍後再試');
+    toast('操作失敗，請稍後再試');
   }
 }
 
@@ -126,11 +146,56 @@ async function handleAddComment(idea, form) {
   if (result && result.success) {
     toast('留言送出！');
     await reloadIdeas();
-    const updated = ALL_IDEAS.find((x) => x.id === idea.id) || idea;
-    renderIdeaDetailModal(updated, { manageActions: true });
-    wireDetailModalActions(updated);
+    refreshDetailModal(idea.id, idea);
   } else {
     toast('留言失敗，請稍後再試');
+  }
+}
+
+function startEditComment(idea, commentId) {
+  const comment = (idea.comments || []).find((c) => c.id === commentId);
+  if (!comment) return;
+  const item = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+  if (!item) return;
+  item.innerHTML = `
+    <div class="form-group" style="margin-bottom:8px;">
+      <input type="text" class="edit-comment-author" value="${escapeHtml(comment.author || '')}">
+    </div>
+    <div class="form-group" style="margin-bottom:8px;">
+      <textarea class="edit-comment-text" style="min-height:60px;">${escapeHtml(comment.text || '')}</textarea>
+    </div>
+    <div class="form-actions" style="margin-top:0;">
+      <button type="button" class="btn btn-outline btn-sm cancel-edit-comment-btn">取消</button>
+      <button type="button" class="btn btn-primary btn-sm save-edit-comment-btn">儲存</button>
+    </div>
+  `;
+  item.querySelector('.cancel-edit-comment-btn').addEventListener('click', () => refreshDetailModal(idea.id, idea));
+  item.querySelector('.save-edit-comment-btn').addEventListener('click', () => saveEditComment(idea, commentId, item));
+}
+
+async function saveEditComment(idea, commentId, item) {
+  const author = item.querySelector('.edit-comment-author').value.trim();
+  const text = item.querySelector('.edit-comment-text').value.trim();
+  if (!author || !text) return;
+  const result = await updateComment(idea.id, commentId, { author, text });
+  if (result && result.success) {
+    toast('留言已更新');
+    await reloadIdeas();
+    refreshDetailModal(idea.id, idea);
+  } else {
+    toast('更新失敗，請稍後再試');
+  }
+}
+
+async function handleDeleteComment(idea, commentId) {
+  if (!confirm('確定要刪除這則留言嗎？')) return;
+  const result = await deleteComment(idea.id, commentId);
+  if (result && result.success) {
+    toast('留言已刪除');
+    await reloadIdeas();
+    refreshDetailModal(idea.id, idea);
+  } else {
+    toast('刪除失敗，請稍後再試');
   }
 }
 
