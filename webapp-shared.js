@@ -664,7 +664,9 @@ function initActivities() {
   var ALL_ACTIVITIES = [];
   var activeFilters = { purpose: {}, special: {}, mechanism: {}, activityType: {} };
   var searchTerm = '';
-  var ACTIVITY_PURPOSE_TAGS = GOAL_TAGS.map(function (g) { return g.key; });
+  // 設計目的分類基礎跟「我要找活動靈感」「我有活動靈感」統一，用同一份 GOAL_TAGS，
+  // 過往歷史活動這裡另外加上三個傳統業務目的分類（留存／拉新／回流），只有這個頁面有。
+  var ACTIVITY_PURPOSE_TAGS = GOAL_TAGS.map(function (g) { return g.key; }).concat(['留存', '拉新', '回流']);
 
   function collectDynamicSpecialTags(activities) {
     var seen = {};

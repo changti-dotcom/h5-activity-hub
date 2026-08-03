@@ -2,8 +2,9 @@ let ALL_ACTIVITIES = [];
 const activeFilters = { purpose: new Set(), special: new Set(), mechanism: new Set(), activityType: new Set() };
 let searchTerm = '';
 
-// 設計目的分類跟「我要找活動靈感」「我有活動靈感」統一，用同一份 GOAL_TAGS
-const ACTIVITY_PURPOSE_TAGS = GOAL_TAGS.map((g) => g.key);
+// 設計目的分類基礎跟「我要找活動靈感」「我有活動靈感」統一，用同一份 GOAL_TAGS，
+// 過往歷史活動這裡另外加上三個傳統業務目的分類（留存／拉新／回流），只有這個頁面有。
+const ACTIVITY_PURPOSE_TAGS = [...GOAL_TAGS.map((g) => g.key), '留存', '拉新', '回流'];
 const ACTIVITY_TYPE_OPTIONS = ['H5活動', '活動中心活動'];
 
 function collectDynamicSpecialTags(activities) {
