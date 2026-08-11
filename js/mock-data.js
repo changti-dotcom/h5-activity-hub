@@ -13,7 +13,7 @@ const MOCK_ACTIVITIES = [
     description: '完成小遊戲挑戰可獲得甜夢時光套裝（元流 7011、7012）。',
     mechanism: '2048 玩法，透過合併方塊累積分數達成關卡目標。',
     mechanismTags: ['益智消除'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://drive.google.com/file/d/1oCc5GvHPa7EhBtgQOasMZ1haGFqaqWT_/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_02', name: '源寶旅行日記', dateText: '2026/01/30 14:00–02/06 23:59',
@@ -31,7 +31,7 @@ const MOCK_ACTIVITIES = [
     description: '完成聯動劇情任務可獲得聯動語音、回城特效、加速特效等聯動獎勵。',
     mechanism: '向皇上大聲請安，並躲過其他嬪妃的阻撓，考驗反應速度。',
     mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: ['IP聯動'], metrics: null,
-    referenceLink: '', images: ['https://scontent.ftpe8-3.fna.fbcdn.net/v/t39.30808-6/635282098_1368263048664457_5977629516477237119_n.jpg?stp=dst-jpg_tt6&cstp=mx1200x1200&ctp=p526x296&_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=OVSZkT2OaHYQ7kNvwH5C1Gj&_nc_oc=AdpOPv2AT_ga3o63Q1wOUu3qBcoX1dlHnxox75t6yXRnJbHKUrmnHo28MZB54eKH5Yw&_nc_zt=23&_nc_ht=scontent.ftpe8-3.fna&_nc_gid=TwwgkWFokGmYVSXc5J534w&_nc_ss=7f20f&oh=00_AQClFM5DnxhxXV1WiEHsJy2MWpp6tiIrCQV_lLxgjKwHpA&oe=6A65EBD5'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://scontent.ftpe8-3.fna.fbcdn.net/v/t39.30808-6/635282098_1368263048664457_5977629516477237119_n.jpg?stp=dst-jpg_tt6&cstp=mx1200x1200&ctp=p526x296&_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=OVSZkT2OaHYQ7kNvwH5C1Gj&_nc_oc=AdpOPv2AT_ga3o63Q1wOUu3qBcoX1dlHnxox75t6yXRnJbHKUrmnHo28MZB54eKH5Yw&_nc_zt=23&_nc_ht=scontent.ftpe8-3.fna&_nc_gid=TwwgkWFokGmYVSXc5J534w&_nc_ss=7f20f&oh=00_AQClFM5DnxhxXV1WiEHsJy2MWpp6tiIrCQV_lLxgjKwHpA&oe=6A65EBD5', 'https://drive.google.com/file/d/1yvF22JjJ4k8daOwpHW8AmV16OUvGIW7O/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_04', name: '新年祈福光明燈', dateText: '2025/01/24 16:00–02/03 23:59',
@@ -50,7 +50,7 @@ const MOCK_ACTIVITIES = [
     description: '下發羊咩女僕頭像（valorpass9022）。',
     mechanism: '經營甜點店拿好禮！完成任務解鎖餐點種類，上架並獲取收益，兌換里程碑獎勵。',
     mechanismTags: ['經營模擬'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://drive.google.com/file/d/1oQIaO-uX_aqM6UpKFyah-HQZAx1sk0f1/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_07', name: '夏日酥脆挑戰賽', dateText: '2025/06/14 12:00–06/30 23:59',
@@ -69,7 +69,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '心理測驗形式，依作答結果分派鑑定結果。',
     mechanismTags: ['心理測驗'], purposeTags: ['提升非對局在線時長'], specialTags: [],
     metrics: { visitRate: 42.35, completionRate: 32.64 },
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://drive.google.com/file/d/1ZVeDrObQZvzYD7q43MfcddPTV7dfVnqe/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_13', name: '安奈特的夏日冰坊', dateText: '2024/6/19 10:00–7/7 23:59',
@@ -79,7 +79,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '經營冰鋪拿好禮！完成任務解鎖新冰淇淋種類，上架獲取收益，兌換里程碑獎勵。',
     mechanismTags: ['經營模擬'], purposeTags: ['提升非對局在線時長'], specialTags: ['節慶檔期'],
     metrics: { visitRate: 31.14, completionRate: 8.79 },
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://drive.google.com/file/d/1F7W7pSK2zkrAkkWmP_vl2HA7rtBkHGMU/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_14', name: '屬於我的2024傳說', dateText: '2024/7/6–7/8',
@@ -89,7 +89,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '玩家進入活動頁面回顧年度傳說大事記與個人數據，完成回顧後獲得年度回顧驚喜箱。',
     mechanismTags: ['劇情回顧'], purposeTags: ['提升非對局在線時長'], specialTags: ['週年慶'],
     metrics: { visitRate: 48.57, completionRate: 48.24 },
-    referenceLink: '', images: ['https://kgtw.cdn.garenanow.com/mgames/kgtw/events/officalweb/skinreview.png'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://kgtw.cdn.garenanow.com/mgames/kgtw/events/officalweb/skinreview.png', 'https://drive.google.com/file/d/1-9hY0GytW_0X7dFLornh1VNsyrM7b_hK/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_15', name: '艾森諾攻防戰', dateText: '2024/9/18 16:00–10/6 23:59',
@@ -118,7 +118,7 @@ const MOCK_ACTIVITIES = [
     description: '資源上架：艾瑞的比心（41322）。',
     mechanism: '心理測驗形式。',
     mechanismTags: ['心理測驗'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://drive.google.com/file/d/1wlD1vwT9WU9CC1SJZONfEUG7MRj8NmmK/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_26', name: '嘉年華樂園', dateText: '2023/4/29–5/14',
@@ -127,7 +127,7 @@ const MOCK_ACTIVITIES = [
     description: '',
     mechanism: '射箭、打地鼠、放映廳等多款小遊戲合輯。',
     mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['https://drive.google.com/file/d/1SXwAahwDnquLiRXhex70-il8VVRt0z7z/view'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_29', name: '週年慶回憶錄', dateText: '',
