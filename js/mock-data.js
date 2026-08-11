@@ -32,7 +32,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '向皇上大聲請安，並躲過其他嬪妃的阻撓，考驗反應速度。',
     mechanismTags: ['劇情回顧'], purposeTags: [], specialTags: ['IP聯動'],
     metrics: { visitRate: 21.57, completionRate: 4.24 },
-    referenceLink: '', images: ['過往活動圖/宮中一夢.png'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/宮中一夢.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_04', name: '新年祈福光明燈', dateText: '2025/01/24 16:00–02/03 23:59',
@@ -70,7 +70,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '心理測驗形式，依作答結果分派鑑定結果。',
     mechanismTags: ['心理測驗'], purposeTags: ['提升非對局在線時長'], specialTags: [],
     metrics: { visitRate: 42.35, completionRate: 32.64 },
-    referenceLink: '', images: ['過往活動圖/貓蟲鑑定送永久表情.png'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/貓蟲鑑定送永久表情.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_13', name: '安奈特的夏日冰坊', dateText: '2024/6/19 10:00–7/7 23:59',
@@ -110,7 +110,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '拚手速點擊累積咒力，累積達標完成積分挑戰。',
     mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: ['IP聯動'],
     metrics: { visitRate: 30.68, completionRate: 10.78 },
-    referenceLink: '', images: ['過往活動圖/咒力輸出挑戰.png'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/咒力輸出挑戰.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_25', name: '誰是你的幸運女神', dateText: '2023/3/25 00:00–4/6 23:59',
@@ -119,7 +119,7 @@ const MOCK_ACTIVITIES = [
     description: '資源上架：艾瑞的比心（41322）。',
     mechanism: '心理測驗形式。',
     mechanismTags: ['心理測驗'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: ['過往活動圖/誰是你的幸運女神.png'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/誰是你的幸運女神.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_26', name: '嘉年華樂園', dateText: '2023/4/29–5/14',
@@ -128,7 +128,7 @@ const MOCK_ACTIVITIES = [
     description: '',
     mechanism: '射箭、打地鼠、放映廳等多款小遊戲合輯。',
     mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: ['過往活動圖/H5 嘉年華樂園.png'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/H5 嘉年華樂園.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_29', name: '週年慶回憶錄', dateText: '',
