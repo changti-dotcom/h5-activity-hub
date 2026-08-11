@@ -13,7 +13,7 @@ const MOCK_ACTIVITIES = [
     description: '完成小遊戲挑戰可獲得甜夢時光套裝（元流 7011、7012）。',
     mechanism: '2048 玩法，透過合併方塊累積分數達成關卡目標。',
     mechanismTags: ['益智消除'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: ['https://drive.google.com/file/d/1oCc5GvHPa7EhBtgQOasMZ1haGFqaqWT_/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: [], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_02', name: '源寶旅行日記', dateText: '2026/01/30 14:00–02/06 23:59',
@@ -25,13 +25,14 @@ const MOCK_ACTIVITIES = [
     referenceLink: '', images: ['https://kgtw-cdn-garenanow-com-sh.obs.cn-east-3.myhuaweicloud.com/mgames/kgtw/events/mj/2026/1/YuanbaosDiarypop2.png'], createdBy: '歷史活動彙整',
   },
   {
-    id: 'seed_03', name: '宮中一夢 × 請安大作戰', dateText: '2026/02/19 14:00–03/18 23:59',
-    dateStart: '2026-02-19', dateEnd: '2026-03-18',
+    id: 'seed_03', name: '宮中一夢', dateText: '2026/02/17 10:00–03/18 23:59',
+    dateStart: '2026-02-17', dateEnd: '2026-03-18',
     activityType: 'H5活動',
-    description: '完成聯動劇情任務可獲得聯動語音、回城特效、加速特效等聯動獎勵。',
+    description: '甄嬔聯動周邊：凌雲峰加速（加速）、臣妾做不到你表情（表情）、你的福氣在後頭（回城）。',
     mechanism: '向皇上大聲請安，並躲過其他嬪妃的阻撓，考驗反應速度。',
-    mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: ['IP聯動'], metrics: null,
-    referenceLink: '', images: ['https://scontent.ftpe8-3.fna.fbcdn.net/v/t39.30808-6/635282098_1368263048664457_5977629516477237119_n.jpg?stp=dst-jpg_tt6&cstp=mx1200x1200&ctp=p526x296&_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_ohc=OVSZkT2OaHYQ7kNvwH5C1Gj&_nc_oc=AdpOPv2AT_ga3o63Q1wOUu3qBcoX1dlHnxox75t6yXRnJbHKUrmnHo28MZB54eKH5Yw&_nc_zt=23&_nc_ht=scontent.ftpe8-3.fna&_nc_gid=TwwgkWFokGmYVSXc5J534w&_nc_ss=7f20f&oh=00_AQClFM5DnxhxXV1WiEHsJy2MWpp6tiIrCQV_lLxgjKwHpA&oe=6A65EBD5', 'https://drive.google.com/file/d/1yvF22JjJ4k8daOwpHW8AmV16OUvGIW7O/view'], createdBy: '歷史活動彙整',
+    mechanismTags: ['劇情回顧'], purposeTags: [], specialTags: ['IP聯動'],
+    metrics: { visitRate: 21.57, completionRate: 4.24 },
+    referenceLink: '', images: ['過往活動圖/宮中一夢.png'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_04', name: '新年祈福光明燈', dateText: '2025/01/24 16:00–02/03 23:59',
@@ -50,7 +51,7 @@ const MOCK_ACTIVITIES = [
     description: '下發羊咩女僕頭像（valorpass9022）。',
     mechanism: '經營甜點店拿好禮！完成任務解鎖餐點種類，上架並獲取收益，兌換里程碑獎勵。',
     mechanismTags: ['經營模擬'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: ['https://drive.google.com/file/d/1oQIaO-uX_aqM6UpKFyah-HQZAx1sk0f1/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/女僕甜點店.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_07', name: '夏日酥脆挑戰賽', dateText: '2025/06/14 12:00–06/30 23:59',
@@ -69,7 +70,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '心理測驗形式，依作答結果分派鑑定結果。',
     mechanismTags: ['心理測驗'], purposeTags: ['提升非對局在線時長'], specialTags: [],
     metrics: { visitRate: 42.35, completionRate: 32.64 },
-    referenceLink: '', images: ['https://drive.google.com/file/d/1ZVeDrObQZvzYD7q43MfcddPTV7dfVnqe/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/貓蟲鑑定送永久表情.png'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_13', name: '安奈特的夏日冰坊', dateText: '2024/6/19 10:00–7/7 23:59',
@@ -79,7 +80,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '經營冰鋪拿好禮！完成任務解鎖新冰淇淋種類，上架獲取收益，兌換里程碑獎勵。',
     mechanismTags: ['經營模擬'], purposeTags: ['提升非對局在線時長'], specialTags: ['節慶檔期'],
     metrics: { visitRate: 31.14, completionRate: 8.79 },
-    referenceLink: '', images: ['https://drive.google.com/file/d/1F7W7pSK2zkrAkkWmP_vl2HA7rtBkHGMU/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/安奈特的夏日冰坊.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_14', name: '屬於我的2024傳說', dateText: '2024/7/6–7/8',
@@ -89,7 +90,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '玩家進入活動頁面回顧年度傳說大事記與個人數據，完成回顧後獲得年度回顧驚喜箱。',
     mechanismTags: ['劇情回顧'], purposeTags: ['提升非對局在線時長'], specialTags: ['週年慶'],
     metrics: { visitRate: 48.57, completionRate: 48.24 },
-    referenceLink: '', images: ['https://kgtw.cdn.garenanow.com/mgames/kgtw/events/officalweb/skinreview.png', 'https://drive.google.com/file/d/1-9hY0GytW_0X7dFLornh1VNsyrM7b_hK/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/屬於我的2024傳說 (1).jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_15', name: '艾森諾攻防戰', dateText: '2024/9/18 16:00–10/6 23:59',
@@ -109,7 +110,7 @@ const MOCK_ACTIVITIES = [
     mechanism: '拚手速點擊累積咒力，累積達標完成積分挑戰。',
     mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: ['IP聯動'],
     metrics: { visitRate: 30.68, completionRate: 10.78 },
-    referenceLink: '', images: ['https://instagram.ftpe8-4.fna.fbcdn.net/v/t39.30808-6/465177343_984414703715962_5335164534725666257_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzQ5MDk2OTUwMDE1OTQ3NTcxNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTIwMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=IGkS7bpCgBMQ7kNvwF2TWyi&_nc_oc=AdqjzcSwwGF21JhaVjNyBPkLC1AqgeR8-jjulP7xx1JSKueV94H3CJ2c7xwbKoaTCXs&_nc_zt=23&_nc_ht=instagram.ftpe8-4.fna&_nc_gid=ySrpMjqrmH246apLw3AIuQ&_nc_ss=7f60f&oh=00_AQCMgveEjGhLvk-OowlSgU9r0YF30EP0V-mnSIjD8a6htg&oe=6A65D94E'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/咒力輸出挑戰.png'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_25', name: '誰是你的幸運女神', dateText: '2023/3/25 00:00–4/6 23:59',
@@ -118,7 +119,7 @@ const MOCK_ACTIVITIES = [
     description: '資源上架：艾瑞的比心（41322）。',
     mechanism: '心理測驗形式。',
     mechanismTags: ['心理測驗'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: ['https://drive.google.com/file/d/1wlD1vwT9WU9CC1SJZONfEUG7MRj8NmmK/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/誰是你的幸運女神.png'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_26', name: '嘉年華樂園', dateText: '2023/4/29–5/14',
@@ -127,7 +128,7 @@ const MOCK_ACTIVITIES = [
     description: '',
     mechanism: '射箭、打地鼠、放映廳等多款小遊戲合輯。',
     mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: ['https://drive.google.com/file/d/1SXwAahwDnquLiRXhex70-il8VVRt0z7z/view'], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/H5 嘉年華樂園.png'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_29', name: '週年慶回憶錄', dateText: '',
