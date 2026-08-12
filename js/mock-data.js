@@ -13,7 +13,7 @@ const MOCK_ACTIVITIES = [
     description: '完成小遊戲挑戰可獲得甜夢時光套裝（元流 7011、7012）。',
     mechanism: '2048 玩法，透過合併方塊累積分數達成關卡目標。',
     mechanismTags: ['益智消除'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
-    referenceLink: '', images: [], createdBy: '歷史活動彙整',
+    referenceLink: '', images: ['過往活動圖/小遊戲挑戰送元流睡衣套裝（2048）.jpg'], createdBy: '歷史活動彙整',
   },
   {
     id: 'seed_02', name: '源寶旅行日記', dateText: '2026/01/30 14:00–02/06 23:59',
