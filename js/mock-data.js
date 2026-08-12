@@ -12,7 +12,8 @@ const MOCK_ACTIVITIES = [
     activityType: 'H5活動',
     description: '完成小遊戲挑戰可獲得甜夢時光套裝（元流 7011、7012）。',
     mechanism: '2048 玩法，透過合併方塊累積分數達成關卡目標。',
-    mechanismTags: ['益智消除'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
+    mechanismTags: ['益智消除'], purposeTags: ['提升非對局在線時長'], specialTags: [],
+    metrics: { visitRate: 11.62, completionRate: 1.48 },
     referenceLink: '', images: ['過往活動圖/小遊戲挑戰送元流睡衣套裝（2048）.jpg'], createdBy: '歷史活動彙整',
   },
   {
@@ -21,7 +22,8 @@ const MOCK_ACTIVITIES = [
     activityType: 'H5活動',
     description: '',
     mechanism: '玩家可進行「源寶旅行日記」創作，完成日記後累積進度並獲得對應獎勵。',
-    mechanismTags: ['任務養成'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
+    mechanismTags: ['任務養成'], purposeTags: ['提升非對局在線時長'], specialTags: [],
+    metrics: { visitRate: 34.38, completionRate: 12.24 },
     referenceLink: '', images: ['https://kgtw-cdn-garenanow-com-sh.obs.cn-east-3.myhuaweicloud.com/mgames/kgtw/events/mj/2026/1/YuanbaosDiarypop2.png'], createdBy: '歷史活動彙整',
   },
   {
@@ -50,7 +52,8 @@ const MOCK_ACTIVITIES = [
     activityType: 'H5活動',
     description: '下發羊咩女僕頭像（valorpass9022）。',
     mechanism: '經營甜點店拿好禮！完成任務解鎖餐點種類，上架並獲取收益，兌換里程碑獎勵。',
-    mechanismTags: ['經營模擬'], purposeTags: ['提升非對局在線時長'], specialTags: [], metrics: null,
+    mechanismTags: ['經營模擬'], purposeTags: ['提升非對局在線時長'], specialTags: [],
+    metrics: { visitRate: 30.08, completionRate: 7.89 },
     referenceLink: '', images: ['過往活動圖/女僕甜點店.jpg'], createdBy: '歷史活動彙整',
   },
   {
@@ -59,7 +62,8 @@ const MOCK_ACTIVITIES = [
     activityType: 'H5活動',
     description: '酥脆特派員造型（53008）。',
     mechanism: '摳糖餅、木頭人等反應類小遊戲玩法。',
-    mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: ['節慶檔期'], metrics: null,
+    mechanismTags: ['反應操作'], purposeTags: ['提升非對局在線時長'], specialTags: ['節慶檔期'],
+    metrics: { visitRate: 53.83, completionRate: 8.15 },
     referenceLink: '', images: ['https://p2.bahamut.com.tw/B/2KU/28/a52f823cd8e4a2b216a52cb7061uimc5.JPG'], createdBy: '歷史活動彙整',
   },
   {
