@@ -135,8 +135,8 @@ const MOCK_ACTIVITIES = [
     referenceLink: '', images: ['過往活動圖/H5 嘉年華樂園.jpg'], createdBy: '歷史活動彙整',
   },
   {
-    id: 'seed_29', name: '週年慶回憶錄', dateText: '',
-    dateStart: '', dateEnd: '',
+    id: 'seed_29', name: '週年慶回憶錄', dateText: '2024/10/25 17:00–10/28 23:59',
+    dateStart: '2024-10-25', dateEnd: '2024-10-28',
     activityType: 'H5活動',
     description: '完成回顧任務可獲得「週年玩家稱號」。',
     mechanism: '',
