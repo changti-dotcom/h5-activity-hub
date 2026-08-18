@@ -1,2 +1,4 @@
 .claude/settings.local.json
 tmp/
+server/node_modules/
+.h5-data/

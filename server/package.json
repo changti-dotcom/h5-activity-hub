@@ -1,0 +1,13 @@
+{
+  "name": "h5-idea-hub-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "同源靜態網頁 + 共用資料 API，供 RUN 平台部署使用",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
