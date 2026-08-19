@@ -37,7 +37,7 @@ var GOAL_TAGS = [
   { key: '有趣時事梗', icon: '🔥' },
 ];
 
-var ACTIVITY_TYPE_OPTIONS = ['H5活動', '活動中心活動'];
+var ACTIVITY_TYPE_OPTIONS = ['H5活動', '遊戲內活動'];
 
 // ---------- 共用 UI 輔助函式 ----------
 function escapeHtml(str) {

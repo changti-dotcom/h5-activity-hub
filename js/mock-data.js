@@ -3,7 +3,7 @@
 // 設計目的（拉新/回流/留存...）與成效數據多數尚待營運團隊補齊，先以空值 / 待補充呈現，
 // 待正式串接 Google Sheet 後，可直接在 Sheet 或「新增活動紀錄」表單中補上真實數據。
 // images 為活動照片連結陣列，目前皆為空陣列（尚未收集照片），之後可直接在 Sheet 的 images 欄位貼上圖片連結（一行一個）。
-// activityType：H5活動 / 活動中心活動，這批既有資料都是 H5 小遊戲活動；活動中心活動的歷史資料待補齊。
+// activityType：H5活動 / 遊戲內活動，遊戲內活動泛指活動中心、換皮、序號、聊天彩蛋、快捷語音等各種形式的條件兌換型活動。
 
 const MOCK_ACTIVITIES = [
   {
@@ -153,6 +153,86 @@ const MOCK_ACTIVITIES = [
     mechanismTags: [], purposeTags: ['提升非對局在線時長'], specialTags: [],
     metrics: { visitRate: 20.17, completionRate: 8.63 },
     referenceLink: '', images: ['https://cdn.yesmedia.com.tw/wp-content/uploads/2026/04/20260408170227_45-scaled.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_31', name: '在一起，強大！（情人節哥布林活動）', dateText: '2025/02/14',
+    dateStart: '2025-02-14', dateEnd: '2025-02-14',
+    activityType: '遊戲內活動',
+    description: '大獎：哥布林相框。時事哏：哥布林 & 英雄諧音。',
+    mechanism: '活動中心條件兌換，完成指定條件即可兌換哥布林相框。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 72.65, completionRate: 23.65 },
+    referenceLink: '', images: ['熱點活動圖/哥布林拍臉套圖.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_32', name: '四宮格ilua 跟著羊咩去遶境', dateText: '2025/04/03',
+    dateStart: '2025-04-03', dateEnd: '2025-04-03',
+    activityType: '遊戲內活動',
+    description: '大獎：羊咩遶境相框。玩法哏：擲筊、尋找威力（尋找羊咩）。',
+    mechanism: 'ilua（換皮）活動，四宮格互動形式兌換獎勵。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 69.98, completionRate: 28.60 },
+    referenceLink: '', images: ['熱點活動圖/大甲四宮格ilua-主頁.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_33', name: '粽教大戰爭', dateText: '2025/05/19',
+    dateStart: '2025-05-19', dateEnd: '2025-05-19',
+    activityType: '遊戲內活動',
+    description: '大獎：造型自選箱。時事哏：戰南北粽（南北粽之爭）。',
+    mechanism: '條件兌換活動，完成指定條件兌換造型自選箱。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 65.20, completionRate: 3.67 },
+    referenceLink: '', images: ['熱點活動圖/粽教大戰爭.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_34', name: '版更登入領 Chill Guy 頭像（寶藏男孩比洛爾登場）', dateText: '2025/01/08',
+    dateStart: '2025-01-08', dateEnd: '2025-01-08',
+    activityType: '遊戲內活動',
+    description: '大獎：弗Chill倫頭像。時事哏：Chill Guy 梗。',
+    mechanism: '聊天彩蛋形式，版本更新後登入即可領取。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 7.49, completionRate: 7.49 },
+    referenceLink: '', images: ['熱點活動圖/登入領 Chill guy.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_35', name: '蕭煌奇盲盒', dateText: '2025/07/26',
+    dateStart: '2025-07-26', dateEnd: '2025-07-26',
+    activityType: '遊戲內活動',
+    description: '大獎：趣味頭像（眼前的黑不是黑、你說的白是什麼白、真的白、真的黑、超7凱恩）。時事哏：蕭煌奇梗。',
+    mechanism: '序號兌換形式，輸入序號兌換趣味頭像。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 20.27, completionRate: 20.27 },
+    referenceLink: '', images: ['熱點活動圖/蕭煌奇盲盒.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_36', name: '尼克星語音表情／快捷語音', dateText: '2026/03/28',
+    dateStart: '2026-03-28', dateEnd: '2026-03-28',
+    activityType: '遊戲內活動',
+    description: '大獎：「不要生漆」語音表情 41591。時事哏：尼克星 & 0322 梗。',
+    mechanism: '快捷語音形式，觸發指定條件兌換語音表情。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 60.43, completionRate: 60.43 },
+    referenceLink: '', images: ['熱點活動圖/尼克星語音表情_快捷語音.jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_37', name: '我的刀盾（頭像／頭框／加星卡）', dateText: '2026/05/20',
+    dateStart: '2026-05-20', dateEnd: '2026-05-20',
+    activityType: '遊戲內活動',
+    description: '大獎：我的刀盾頭像。時事哏：刀盾。',
+    mechanism: '活動中心條件兌換，完成指定條件兌換頭像／頭框／加星卡。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點'],
+    metrics: { visitRate: 63.06, completionRate: 26.37 },
+    referenceLink: '', images: ['熱點活動圖/我的刀盾 (頭像_頭框_加星卡).jpg'], createdBy: '歷史活動彙整',
+  },
+  {
+    id: 'seed_38', name: '67 領限時點劵＆拉回流', dateText: '2026/06/04',
+    dateStart: '2026-06-04', dateEnd: '2026-06-04',
+    activityType: '遊戲內活動',
+    description: '大獎：710 限時點劵。時事哏：67。備註：邀請＆被邀累積約 9 萬人。',
+    mechanism: '活動中心拉回流模板＋條件兌換，邀請好友互動兌換限時點劵。',
+    mechanismTags: [], purposeTags: [], specialTags: ['時事熱點', '老玩家回歸'],
+    metrics: null,
+    referenceLink: '', images: ['熱點活動圖/01. [67 回來啦]：拍臉.jpg'], createdBy: '歷史活動彙整',
   },
 ];
 

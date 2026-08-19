@@ -26,7 +26,7 @@ while ($listener.IsListening) {
     if ($path -eq '/') { $path = '/index.html' }
     $filePath = Join-Path $root $path.TrimStart('/')
 
-    if (Test-Path $filePath -PathType Leaf) {
+    if (Test-Path -LiteralPath $filePath -PathType Leaf) {
       $ext = [System.IO.Path]::GetExtension($filePath)
       $contentType = $mime[$ext]
       if (-not $contentType) { $contentType = 'application/octet-stream' }
