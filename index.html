@@ -39,12 +39,19 @@
     </a>
   </div>
 
-  <div class="form-banner">
+  <div class="form-banner" id="modeBanner">
     目前網站處於<strong>示範模式</strong>：資料來自種子範例，成效數據多數尚待營運團隊補齊。串接正式共用資料庫的方法請見專案內 <code>README.md</code>。
   </div>
 </main>
 
 <footer class="site-footer">傳說對決營運團隊內部工具 · 僅供公司內部使用</footer>
 
+<script src="js/config.js?v=20260819"></script>
+<script>
+  if (!CONFIG.USE_MOCK) {
+    document.getElementById('modeBanner').innerHTML =
+      '目前站台已連接<strong>公司共用資料庫</strong>：大家在「我有活動靈感」「過往歷史活動」新增/編輯/按讚/留言的內容，都會同步給所有人看到。';
+  }
+</script>
 </body>
 </html>
